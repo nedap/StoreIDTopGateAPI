@@ -10,16 +10,15 @@ namespace StoreIDTopGateAPI
         static void Main(string[] args)
         {
             Console.WriteLine("Store !D API tester for !D Top and !D Gate");
-            /*
+
             if (args.Length == 0)
             {
                 Console.WriteLine("Please use URL of device as parameter, for example: http://localhost:8081");
                 Environment.Exit(0);
             }
-            */
+
             // instantiate API wrapper
-            ApiWrapper api = new ApiWrapper("http://10.2.40.23:8081");
-//            ApiWrapper api = new ApiWrapper(args[0]);
+            ApiWrapper api = new ApiWrapper(args[0]);
 
             Boolean running = true;
             while(running)
@@ -29,6 +28,7 @@ namespace StoreIDTopGateAPI
                 Console.WriteLine("------------------------------------------------------");
                 Console.WriteLine("0. Test connection");
                 Console.WriteLine("1. Show status");
+                Console.WriteLine("c. Send action");
                 Console.WriteLine("-- SPECS --                 -- SUBSCRIPTIONS --");
                 Console.WriteLine("2. Show all specs           7. Show all subscriptions");
                 Console.WriteLine("3. Create new spec          8. Create new subscription");
@@ -320,6 +320,54 @@ namespace StoreIDTopGateAPI
                         try {
                             api.deleteSubscription(int.Parse(deleteSubscriptionId));
                         } catch (Exception e) {
+                            Console.WriteLine(e.ToString());
+                        }
+                        break;
+                    case ConsoleKey.C:    // c
+                        Console.WriteLine("Send an action");
+                        Console.WriteLine("Which action?");
+                        Console.WriteLine("1 = blink");
+                        Console.WriteLine("2 = beep");
+                        Console.WriteLine("3 = blink and beep");
+                        String sendActionOptions = "3";
+                        try {
+                            sendActionOptions = Console.ReadLine();
+                        } catch (Exception) {
+                            Environment.Exit(0);
+                        }
+                        Console.Write("How many times: ");
+                        String sendActionCount = "";
+                        try
+                        {
+                            sendActionCount = Console.ReadLine();
+                        }
+                        catch (Exception)
+                        {
+                            Environment.Exit(0);
+                        }
+                        try
+                        {
+                            Action[] actions = new Action[0];
+                            if (sendActionOptions == "1")
+                            {
+                                actions = new Action[1];
+                                actions[0] = new Action("blink", int.Parse(sendActionCount));
+                            }
+                            else if (sendActionOptions == "2")
+                            {
+                                actions = new Action[1];
+                                actions[0] = new Action("beep", int.Parse(sendActionCount));
+                            }
+                            else if (sendActionOptions == "3")
+                            {
+                                actions = new Action[2];
+                                actions[0] = new Action("blink", int.Parse(sendActionCount));
+                                actions[1] = new Action("beep", int.Parse(sendActionCount));
+                            }
+                            api.sendAction(actions);
+                        }
+                        catch (Exception e)
+                        {
                             Console.WriteLine(e.ToString());
                         }
                         break;

@@ -53,7 +53,6 @@ public class ApiWrapper {
 
     public void deleteSpec(Integer id) throws Exception {
         String httpResult = doHttpRequest("/service/events/specs/" + id, "DELETE");
-        System.out.println("http result = |" + httpResult + "|");
     }
 
     public Spec updateSpec(Spec spec) throws Exception {
@@ -82,13 +81,16 @@ public class ApiWrapper {
 
     public void deleteSubscription(Integer id) throws Exception {
         String httpResult = doHttpRequest("/service/events/subscriptions/" + id, "DELETE");
-        System.out.println(httpResult);
     }
 
     public Subscription updateSubscription(Subscription subscription) throws Exception {
         String httpResult = doHttpRequest("/service/events/subscriptions/" + subscription.getId(), "PUT", subscription);
         Gson gson = new Gson();
         return (Subscription)gson.fromJson(httpResult, Subscription.class);
+    }
+
+    public void sendAction(Action[] actions) throws Exception {
+        String httpResult = doHttpRequest("/service/actions", "POST", actions);
     }
 
     public void testConnection() {

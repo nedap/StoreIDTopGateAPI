@@ -29,6 +29,7 @@ public class App {
             System.out.println("------------------------------------------------------");
             System.out.println("0. Test connection");
             System.out.println("1. Show status");
+            System.out.println("c. Send action");
             System.out.println("-- SPECS --                 -- SUBSCRIPTIONS --");
             System.out.println("2. Show all specs           7. Show all subscriptions");
             System.out.println("3. Create new spec          8. Create new subscription");
@@ -313,6 +314,44 @@ public class App {
                     }
                     try {
                         api.deleteSubscription(Integer.parseInt(deleteSubscriptionId));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 99:    // c
+                    System.out.println("Send an action");
+                    System.out.println("Which action?");
+                    System.out.println("1 = blink");
+                    System.out.println("2 = beep");
+                    System.out.println("3 = blink and beep");
+                    String sendActionOptions = "3";
+                    try {
+                        sendActionOptions = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    System.out.print("How many times: ");
+                    String sendActionTimes = "";
+                    try {
+                        sendActionTimes = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    
+                    try {
+                        Action[] actions = new Action[0];
+                        if (sendActionOptions.equals("1")) {
+                            actions = new Action[1];
+                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
+                        } else if (sendActionOptions.equals("2")) {
+                            actions = new Action[1];
+                            actions[0] = new Action("beep", Integer.parseInt(sendActionTimes));
+                        } else if (sendActionOptions.equals("3")) {
+                            actions = new Action[2];
+                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
+                            actions[1] = new Action("beep", Integer.parseInt(sendActionTimes));
+                        }
+                        api.sendAction(actions);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

@@ -91,7 +91,12 @@ namespace StoreIDTopGateAPI
             String httpResult = doHttpRequest("/service/events/subscriptions/" + subscription.id, "PUT", toJson(subscription, typeof(Subscription)));
             return (Subscription)fromJson(httpResult, typeof(Subscription));
         }
-        
+
+        public void sendAction(Action[] actions)
+        {
+            String httpResult = doHttpRequest("/service/actions", "POST", toJson(actions, typeof(Action[])));
+        }
+
         public void testConnection() {
             try {
                 String httpResult = doHttpRequest("/status");
@@ -115,7 +120,6 @@ namespace StoreIDTopGateAPI
          */
         private String doHttpRequest(String url, String requestMethod = "GET", String data = "")
         {
-            Console.WriteLine(data);
             byte[] dataBytes = System.Text.Encoding.UTF8.GetBytes(data);
             HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(this.baseUrl + url);
             if (requestMethod == "GET")
