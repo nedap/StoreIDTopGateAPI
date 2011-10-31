@@ -92,9 +92,9 @@ namespace StoreIDTopGateAPI
             return (Subscription)fromJson(httpResult, typeof(Subscription));
         }
 
-        public void sendAction(Action[] actions)
+        public void sendActions(Actions actions)
         {
-            String httpResult = doHttpRequest("/service/actions", "POST", toJson(actions, typeof(Action[])));
+            String httpResult = doHttpRequest("/service/actions", "POST", toJson(actions, typeof(Actions)));
         }
 
         public void testConnection() {

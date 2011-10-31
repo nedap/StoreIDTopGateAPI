@@ -339,19 +339,19 @@ public class App {
                     }
                     
                     try {
-                        Actions actions = new Actions(0);
+                        Action[] actions = new Action[0];
                         if (sendActionOptions.equals("1")) {
-                            actions = new Actions(1);
-                            actions.add(0, new Action("blink", Integer.parseInt(sendActionTimes)));
+                            actions = new Action[1];
+                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
                         } else if (sendActionOptions.equals("2")) {
-                            actions = new Actions(1);
-                            actions.add(0, new Action("beep", Integer.parseInt(sendActionTimes)));
+                            actions = new Action[1];
+                            actions[0] = new Action("beep", Integer.parseInt(sendActionTimes));
                         } else if (sendActionOptions.equals("3")) {
-                            actions = new Actions(2);
-                            actions.add(0, new Action("blink", Integer.parseInt(sendActionTimes)));
-                            actions.add(1, new Action("beep", Integer.parseInt(sendActionTimes)));
+                            actions = new Action[2];
+                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
+                            actions[1] = new Action("beep", Integer.parseInt(sendActionTimes));
                         }
-                        api.sendActions(actions);
+                        api.sendActions(new Actions(actions));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

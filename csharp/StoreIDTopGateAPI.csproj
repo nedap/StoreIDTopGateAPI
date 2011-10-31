@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="Action.cs" />
     <Compile Include="ApiWrapper.cs" />
+    <Compile Include="Actions.cs" />
     <Compile Include="Device.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

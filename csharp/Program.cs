@@ -364,7 +364,7 @@ namespace StoreIDTopGateAPI
                                 actions[0] = new Action("blink", int.Parse(sendActionCount));
                                 actions[1] = new Action("beep", int.Parse(sendActionCount));
                             }
-                            api.sendAction(actions);
+                            api.sendActions(new Actions(actions));
                         }
                         catch (Exception e)
                         {
