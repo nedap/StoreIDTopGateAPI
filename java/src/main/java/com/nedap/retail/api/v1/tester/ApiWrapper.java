@@ -89,7 +89,7 @@ public class ApiWrapper {
         return (Subscription)gson.fromJson(httpResult, Subscription.class);
     }
 
-    public void sendAction(Action[] actions) throws Exception {
+    public void sendActions(Actions actions) throws Exception {
         String httpResult = doHttpRequest("/service/actions", "POST", actions);
     }
 
