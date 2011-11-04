@@ -4,6 +4,7 @@ import com.nedap.retail.api.v1.model.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Timer;
 
 /**
  * Store !D API tester for !D Top and !D Gate
@@ -30,6 +31,7 @@ public class App {
             System.out.println("0. Test connection");
             System.out.println("1. Show status");
             System.out.println("c. Send action");
+            System.out.println("d. Create spec, subscription and receive incoming events");
             System.out.println("-- SPECS --                 -- SUBSCRIPTIONS --");
             System.out.println("2. Show all specs           7. Show all subscriptions");
             System.out.println("3. Create new spec          8. Create new subscription");
@@ -356,6 +358,42 @@ public class App {
                         e.printStackTrace();
                     }
                     break;
+                case 100:   // d
+                    System.out.print("On what hostname or IP address is this system reachable by the !D Top or !D Gate: ");
+                    String testApiHostname = "";
+                    try {
+                        testApiHostname = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    int testApiPortnr = 8088;
+                    System.out.println("Starting webserver...");
+                    Thread t = new Thread(new EventsServer(testApiPortnr));
+                    t.start();
+                    String[] testApiSpecEvents = new String[2];
+                    testApiSpecEvents[0] = "rfid.tag.arrive";
+                    testApiSpecEvents[1] = "rfid.tag.depart";
+                    System.out.println("Creating spec...");
+                    try {
+                        api.createSpec(new Spec(0, "tester", testApiSpecEvents));
+                    } catch (Exception e) {
+                    }
+                    System.out.println("Creating subscription...");
+                    Subscription testApiSubscription;
+                    try {
+                        testApiSubscription = api.createSubscription(new Subscription(0, "tester", "http://" + testApiHostname+ ":" + testApiPortnr + "/", "", 240));
+                        // set timer to renew subscription every 200 minutes
+                        RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
+                        Timer timer = new Timer();
+                        timer.scheduleAtFixedRate(task, 200*60*1000, 200*60*1000);
+                    } catch (Exception e) {
+                    }
+                    System.out.println("Press Enter to exit");
+                    try {
+                        inputBuffer.readLine();
+                    } catch (IOException e) {
+                    }
+                    System.exit(0);
             }
         }
     }
