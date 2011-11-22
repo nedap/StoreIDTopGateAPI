@@ -374,25 +374,34 @@ public class App {
                     testApiSpecEvents[0] = "rfid.tag.arrive";
                     testApiSpecEvents[1] = "rfid.tag.depart";
                     System.out.println("Creating spec...");
+                    Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
                     try {
-                        api.createSpec(new Spec(0, "tester", testApiSpecEvents));
+                        testApiSpec = api.createSpec(testApiSpec);
                     } catch (Exception e) {
                     }
                     System.out.println("Creating subscription...");
-                    Subscription testApiSubscription;
+                    Subscription testApiSubscription = new Subscription(0, "tester", "http://" + testApiHostname+ ":" + testApiPortnr + "/", "", 240);
                     try {
-                        testApiSubscription = api.createSubscription(new Subscription(0, "tester", "http://" + testApiHostname+ ":" + testApiPortnr + "/", "", 240));
-                        // set timer to renew subscription every 200 minutes
-                        RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
-                        Timer timer = new Timer();
-                        timer.scheduleAtFixedRate(task, 200*60*1000, 200*60*1000);
+                        testApiSubscription = api.createSubscription(testApiSubscription);
                     } catch (Exception e) {
                     }
+                    // set timer to renew subscription every 200 minutes
+                    RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
+                    Timer timer = new Timer();
+                    timer.scheduleAtFixedRate(task, 200*60*1000, 200*60*1000);
                     System.out.println("Press Enter to exit");
                     try {
                         inputBuffer.readLine();
                     } catch (IOException e) {
                     }
+                    
+                    System.out.println("Deleting spec and subscription");
+                    try {
+                        api.deleteSpec(testApiSpec.getId());
+                        api.deleteSubscription(testApiSubscription.getId());
+                    } catch (Exception e) {
+                    }
+                    
                     System.exit(0);
             }
         }
