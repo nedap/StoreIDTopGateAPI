@@ -17,11 +17,18 @@ public class App {
         if (args.length==0)
         {
             System.out.println("Please use URL of device as parameter, for example: http://localhost:8081");
+            System.out.println("Optionally, you can use the hostname of of this computer as second parameter to start automatic testing.");
             System.exit(0);
         }
         
         // instantiate API wrapper
         ApiWrapper api = new ApiWrapper(args[0]);
+
+        // if second argument is given, start automatic testing
+        if (args.length==2) {
+            testApi(api, args[1]);
+            System.exit(0);
+        }
         
         boolean running = true;
         while(running) {
@@ -366,44 +373,48 @@ public class App {
                     } catch (IOException e) {
                         System.exit(0);
                     }
-                    int testApiPortnr = 8088;
-                    System.out.println("Starting webserver...");
-                    Thread t = new Thread(new EventsServer(testApiPortnr));
-                    t.start();
-                    String[] testApiSpecEvents = new String[2];
-                    testApiSpecEvents[0] = "rfid.tag.arrive";
-                    testApiSpecEvents[1] = "rfid.tag.depart";
-                    System.out.println("Creating spec...");
-                    Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
-                    try {
-                        testApiSpec = api.createSpec(testApiSpec);
-                    } catch (Exception e) {
-                    }
-                    System.out.println("Creating subscription...");
-                    Subscription testApiSubscription = new Subscription(0, "tester", "http://" + testApiHostname+ ":" + testApiPortnr + "/", "", 240);
-                    try {
-                        testApiSubscription = api.createSubscription(testApiSubscription);
-                    } catch (Exception e) {
-                    }
-                    // set timer to renew subscription every 200 minutes
-                    RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
-                    Timer timer = new Timer();
-                    timer.scheduleAtFixedRate(task, 200*60*1000, 200*60*1000);
-                    System.out.println("Press Enter to exit");
-                    try {
-                        inputBuffer.readLine();
-                    } catch (IOException e) {
-                    }
-                    
-                    System.out.println("Deleting spec and subscription");
-                    try {
-                        api.deleteSpec(testApiSpec.getId());
-                        api.deleteSubscription(testApiSubscription.getId());
-                    } catch (Exception e) {
-                    }
-                    
-                    System.exit(0);
+                    testApi(api, testApiHostname);
             }
+        }
+    }
+    
+    public static void testApi(ApiWrapper api, String ownHostname) {
+        BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
+
+        int testApiPortnr = 8088;
+        System.out.println("Starting webserver...");
+        Thread t = new Thread(new EventsServer(testApiPortnr));
+        t.start();
+        String[] testApiSpecEvents = new String[2];
+        testApiSpecEvents[0] = "rfid.tag.arrive";
+        testApiSpecEvents[1] = "rfid.tag.depart";
+        System.out.println("Creating spec...");
+        Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
+        try {
+            testApiSpec = api.createSpec(testApiSpec);
+        } catch (Exception e) {
+        }
+        System.out.println("Creating subscription...");
+        Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname+ ":" + testApiPortnr + "/", "", 30);
+        try {
+            testApiSubscription = api.createSubscription(testApiSubscription);
+        } catch (Exception e) {
+        }
+        // set timer to renew subscription every 29 minutes
+        RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
+        System.out.println("Press Enter to exit");
+        try {
+            inputBuffer.readLine();
+        } catch (IOException e) {
+        }
+
+        System.out.println("Deleting spec and subscription");
+        try {
+            api.deleteSpec(testApiSpec.getId());
+            api.deleteSubscription(testApiSubscription.getId());
+        } catch (Exception e) {
         }
     }
 }
