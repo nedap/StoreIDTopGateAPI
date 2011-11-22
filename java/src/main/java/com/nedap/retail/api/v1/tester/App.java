@@ -404,17 +404,28 @@ public class App {
         RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
-        System.out.println("Press Enter to exit");
-        try {
-            inputBuffer.readLine();
-        } catch (IOException e) {
+        System.out.println("Press x and Enter to exit");
+        String key = "";
+        while(!key.equals("x")) {
+            try {
+                key = inputBuffer.readLine();
+            } catch (IOException e) {
+            }
         }
 
         System.out.println("Deleting spec and subscription");
         try {
             api.deleteSpec(testApiSpec.getId());
+        } catch (Exception e) {
+        }
+        try {
             api.deleteSubscription(testApiSubscription.getId());
         } catch (Exception e) {
         }
+        try {
+            inputBuffer.close();
+        } catch (Exception e) {
+        }
+        timer.cancel();
     }
 }
