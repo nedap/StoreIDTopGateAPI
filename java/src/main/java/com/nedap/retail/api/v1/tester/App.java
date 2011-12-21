@@ -39,6 +39,7 @@ public class App {
             System.out.println("1. Show status");
             System.out.println("c. Send action");
             System.out.println("d. Create spec, subscription and receive incoming events");
+            System.out.println("e. Get settings             f. Update settings");
             System.out.println("-- SPECS --                 -- SUBSCRIPTIONS --");
             System.out.println("2. Show all specs           7. Show all subscriptions");
             System.out.println("3. Create new spec          8. Create new subscription");
@@ -346,20 +347,39 @@ public class App {
                     } catch (IOException e) {
                         System.exit(0);
                     }
+                    System.out.print("Time the lamp/buzzer is on (in milliseconds): ");
+                    String sendActionOnTime = "";
+                    try {
+                        sendActionOnTime = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    System.out.print("Time the lamp/buzzer is off (in milliseconds): ");
+                    String sendActionOffTime = "";
+                    try {
+                        sendActionOffTime = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    System.out.print("Time the lamp is on afterwards (in milliseconds): ");
+                    String sendActionHoldTime = "";
+                    try {
+                        sendActionHoldTime = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
                     
                     try {
-                        Action[] actions = new Action[0];
+                        String sendActionAction = "";
                         if (sendActionOptions.equals("1")) {
-                            actions = new Action[1];
-                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
+                            sendActionAction = "blink";
                         } else if (sendActionOptions.equals("2")) {
-                            actions = new Action[1];
-                            actions[0] = new Action("beep", Integer.parseInt(sendActionTimes));
+                            sendActionAction = "beep";
                         } else if (sendActionOptions.equals("3")) {
-                            actions = new Action[2];
-                            actions[0] = new Action("blink", Integer.parseInt(sendActionTimes));
-                            actions[1] = new Action("beep", Integer.parseInt(sendActionTimes));
+                            sendActionAction = "blinkAndBeep";
                         }
+                        Action[] actions = new Action[1];
+                        actions[0] = new Action(sendActionAction, Integer.parseInt(sendActionTimes), Integer.parseInt(sendActionOnTime), Integer.parseInt(sendActionOffTime), Integer.parseInt(sendActionHoldTime));
                         api.sendActions(new Actions(actions));
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -374,6 +394,100 @@ public class App {
                         System.exit(0);
                     }
                     testApi(api, testApiHostname);
+                case 101:    // e
+                    System.out.println("Show settings");
+                    try {
+                        System.out.println(api.getSettings().toString());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 102:    // f
+                    System.out.println("Update settings");
+                    Settings settings = new Settings();
+                    System.out.print("Enable RFID reader (y for yes, n for no, anything else for no change): ");
+                    String updateSettingsEnableReader = "";
+                    try {
+                        updateSettingsEnableReader = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    if (updateSettingsEnableReader.equalsIgnoreCase("y")) {
+                        settings.setReaderEnabled(true);
+                    } else if (updateSettingsEnableReader.equalsIgnoreCase("n")) {
+                        settings.setReaderEnabled(false);
+                    }
+                    System.out.print("Enable lights (y for yes, n for no, anything else for no change): ");
+                    String updateSettingsEnableLights = "";
+                    try {
+                        updateSettingsEnableLights = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    if (updateSettingsEnableLights.equalsIgnoreCase("y")) {
+                        settings.setLightsEnabled(true);
+                    } else if (updateSettingsEnableLights.equalsIgnoreCase("n")) {
+                        settings.setLightsEnabled(false);
+                    }
+                    System.out.print("Enable buzzer (y for yes, n for no, anything else for no change): ");
+                    String updateSettingsEnableBuzzer = "";
+                    try {
+                        updateSettingsEnableBuzzer = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    if (updateSettingsEnableBuzzer.equalsIgnoreCase("y")) {
+                        settings.setBuzzerEnabled(true);
+                    } else if (updateSettingsEnableBuzzer.equalsIgnoreCase("n")) {
+                        settings.setBuzzerEnabled(false);
+                    }
+                    System.out.print("Set a new alarm pattern? (y for yes, n for no): ");
+                    String updateSettingsAlarmPattern = "";
+                    try {
+                        updateSettingsAlarmPattern = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    if (updateSettingsAlarmPattern.equalsIgnoreCase("y")) {
+                        AlarmPattern alarmPattern = new AlarmPattern();
+                        System.out.print("Time lights/buzzer are on (in milliseconds, default=400): ");
+                        String updateSettingsInput = "";
+                        try {
+                            updateSettingsInput = inputBuffer.readLine();
+                        } catch (IOException e) {
+                            System.exit(0);
+                        }
+                        alarmPattern.setOnTime(Integer.parseInt(updateSettingsInput));
+                        System.out.print("Time lights/buzzer are off (in milliseconds, default=50): ");
+                        try {
+                            updateSettingsInput = inputBuffer.readLine();
+                        } catch (IOException e) {
+                            System.exit(0);
+                        }
+                        alarmPattern.setOffTime(Integer.parseInt(updateSettingsInput));
+                        System.out.print("Time lights are on after last cycle (in milliseconds, default=7000): ");
+                        try {
+                            updateSettingsInput = inputBuffer.readLine();
+                        } catch (IOException e) {
+                            System.exit(0);
+                        }
+                        alarmPattern.setLightsHoldTime(Integer.parseInt(updateSettingsInput));
+                        System.out.print("Number of cycles (default=5): ");
+                        try {
+                            updateSettingsInput = inputBuffer.readLine();
+                        } catch (IOException e) {
+                            System.exit(0);
+                        }
+                        alarmPattern.setCount(Integer.parseInt(updateSettingsInput));
+                        settings.setAlarmPattern(alarmPattern);
+                    }
+                    
+                    try {
+                        api.updateSettings(settings);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
             }
         }
     }

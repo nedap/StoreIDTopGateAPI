@@ -52,7 +52,7 @@ public class ApiWrapper {
     }
 
     public void deleteSpec(Integer id) throws Exception {
-        String httpResult = doHttpRequest("/service/events/specs/" + id, "DELETE");
+        doHttpRequest("/service/events/specs/" + id, "DELETE");
     }
 
     public Spec updateSpec(Spec spec) throws Exception {
@@ -80,7 +80,7 @@ public class ApiWrapper {
     }
 
     public void deleteSubscription(Integer id) throws Exception {
-        String httpResult = doHttpRequest("/service/events/subscriptions/" + id, "DELETE");
+        doHttpRequest("/service/events/subscriptions/" + id, "DELETE");
     }
 
     public Subscription updateSubscription(Subscription subscription) throws Exception {
@@ -90,7 +90,17 @@ public class ApiWrapper {
     }
 
     public void sendActions(Actions actions) throws Exception {
-        String httpResult = doHttpRequest("/service/actions", "POST", actions);
+        doHttpRequest("/service/actions", "POST", actions);
+    }
+
+    public Settings getSettings() throws Exception {
+        String httpResult = doHttpRequest("/service/settings");
+        Gson gson = new Gson();
+        return (Settings)gson.fromJson(httpResult, Settings.class);
+    }
+    
+    public void updateSettings(Settings settings) throws Exception {
+        doHttpRequest("/service/settings", "PUT", settings);
     }
 
     public void testConnection() {
