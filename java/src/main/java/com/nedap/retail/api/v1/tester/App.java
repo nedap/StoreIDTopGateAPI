@@ -35,9 +35,8 @@ public class App {
             // show menu
             System.out.println();
             System.out.println("------------------------------------------------------");
-            System.out.println("0. Test connection");
-            System.out.println("1. Show status");
-            System.out.println("c. Send action");
+            System.out.println("0. Test connection          1. Show status");
+            System.out.println("c. Send action              g. Send heartbeat");
             System.out.println("d. Create spec, subscription and receive incoming events");
             System.out.println("e. Get settings             f. Update settings");
             System.out.println("-- SPECS --                 -- SUBSCRIPTIONS --");
@@ -484,6 +483,14 @@ public class App {
                     
                     try {
                         api.updateSettings(settings);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                case 103:    // g
+                    System.out.println("Send heartbeat");
+                    try {
+                        api.heartbeat();
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

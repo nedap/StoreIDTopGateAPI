@@ -103,6 +103,10 @@ public class ApiWrapper {
         doHttpRequest("/service/settings", "PUT", settings);
     }
 
+    public void heartbeat() throws Exception {
+        doHttpRequest("/heartbeat", "GET");
+    }
+
     public void testConnection() {
         try {
             String httpResult = doHttpRequest("/status");
