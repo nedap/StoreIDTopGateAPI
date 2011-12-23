@@ -26,9 +26,9 @@ namespace StoreIDTopGateAPI
                 // show menu
                 Console.WriteLine();
                 Console.WriteLine("------------------------------------------------------");
-                Console.WriteLine("0. Test connection");
-                Console.WriteLine("1. Show status");
-                Console.WriteLine("c. Send action");
+                Console.WriteLine("0. Test connection          1. Show status");
+                Console.WriteLine("c. Send action              g. send heartbeat");
+                Console.WriteLine("e. Get settings             f. Update settings");
                 Console.WriteLine("-- SPECS --                 -- SUBSCRIPTIONS --");
                 Console.WriteLine("2. Show all specs           7. Show all subscriptions");
                 Console.WriteLine("3. Create new spec          8. Create new subscription");
@@ -345,26 +345,195 @@ namespace StoreIDTopGateAPI
                         {
                             Environment.Exit(0);
                         }
+                        Console.Write("Time the lamp/buzzer is on (in milliseconds): ");
+                        String sendActionOnTime = "";
+                        try {
+                            sendActionOnTime = Console.ReadLine();
+                        }
+                        catch (Exception)
+                        {
+                            Environment.Exit(0);
+                        }
+                        Console.Write("Time the lamp/buzzer is off (in milliseconds): ");
+                        String sendActionOffTime = "";
+                        try {
+                            sendActionOffTime = Console.ReadLine();
+                        }
+                        catch (Exception)
+                        {
+                            Environment.Exit(0);
+                        }
+                        Console.Write("Time the lamp is on afterwards (in milliseconds): ");
+                        String sendActionHoldTime = "";
+                        try {
+                            sendActionHoldTime = Console.ReadLine();
+                        }
+                        catch (Exception)
+                        {
+                            Environment.Exit(0);
+                        }
                         try
                         {
-                            Action[] actions = new Action[0];
+                            String sendActionAction = "";
                             if (sendActionOptions == "1")
                             {
-                                actions = new Action[1];
-                                actions[0] = new Action("blink", int.Parse(sendActionCount));
+                                sendActionAction = "blink";
                             }
                             else if (sendActionOptions == "2")
                             {
-                                actions = new Action[1];
-                                actions[0] = new Action("beep", int.Parse(sendActionCount));
+                                sendActionAction = "beep";
                             }
                             else if (sendActionOptions == "3")
                             {
-                                actions = new Action[2];
-                                actions[0] = new Action("blink", int.Parse(sendActionCount));
-                                actions[1] = new Action("beep", int.Parse(sendActionCount));
+                                sendActionAction = "blinkAndBeep";
                             }
+                            Action[] actions = new Action[1];
+                            actions[0] = new Action(sendActionAction, int.Parse(sendActionCount), int.Parse(sendActionOnTime), int.Parse(sendActionOffTime), int.Parse(sendActionHoldTime));
                             api.sendActions(new Actions(actions));
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        break;
+                    case ConsoleKey.E:
+                        Console.WriteLine("Get settings");
+                        try
+                        {
+                            Console.WriteLine(api.getSettings().ToString());
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        break;
+                    case ConsoleKey.F:
+                        Console.WriteLine("Update settings");
+                        Settings settings = new Settings();
+                        Console.Write("Enable RFID reader (y for yes, n for no, anything else for no change): ");
+                        String updateSettingsEnableReader = "";
+                        try
+                        {
+                            updateSettingsEnableReader = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        if (updateSettingsEnableReader == "y")
+                        {
+                            settings.readerEnabled = true;
+                        }
+                        else if (updateSettingsEnableReader == "n")
+                        {
+                            settings.readerEnabled = false;
+                        }
+                        Console.Write("Enable lights (y for yes, n for no, anything else for no change): ");
+                        String updateSettingsEnableLights = "";
+                        try
+                        {
+                            updateSettingsEnableLights = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        if (updateSettingsEnableLights == "y")
+                        {
+                            settings.lightsEnabled = true;
+                        }
+                        else if (updateSettingsEnableLights == "n")
+                        {
+                            settings.lightsEnabled = false;
+                        }
+                        Console.Write("Enable buzzer (y for yes, n for no, anything else for no change): ");
+                        String updateSettingsEnableBuzzer = "";
+                        try
+                        {
+                            updateSettingsEnableBuzzer = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        if (updateSettingsEnableBuzzer == "y")
+                        {
+                            settings.buzzerEnabled = true;
+                        }
+                        else if (updateSettingsEnableBuzzer == "n")
+                        {
+                            settings.buzzerEnabled = false;
+                        }
+                        Console.Write("Set a new alarm pattern? (y for yes, n for no): ");
+                        String updateSettingsAlarmPattern = "";
+                        try
+                        {
+                            updateSettingsAlarmPattern = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        if (updateSettingsAlarmPattern == "y")
+                        {
+                            AlarmPattern alarmPattern = new AlarmPattern();
+                            Console.Write("Time lights/buzzer are on (in milliseconds, default=400): ");
+                            String updateSettingsInput = "";
+                            try
+                            {
+                                updateSettingsInput = Console.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.ToString());
+                            }
+                            alarmPattern.onTime = int.Parse(updateSettingsInput);
+                            Console.Write("Time lights/buzzer are off (in milliseconds, default=50): ");
+                            try
+                            {
+                                updateSettingsInput = Console.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.ToString());
+                            }
+                            alarmPattern.offTime = int.Parse(updateSettingsInput);
+                            Console.Write("Time lights are on after last cycle (in milliseconds, default=7000): ");
+                            try
+                            {
+                                updateSettingsInput = Console.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.ToString());
+                            }
+                            alarmPattern.lightsHoldTime = int.Parse(updateSettingsInput);
+                            Console.Write("Number of cycles (default=5): ");
+                            try
+                            {
+                                updateSettingsInput = Console.ReadLine();
+                            }
+                            catch (Exception e)
+                            {
+                                Console.WriteLine(e.ToString());
+                            }
+                            alarmPattern.count = int.Parse(updateSettingsInput);
+                            settings.alarmPattern = alarmPattern;
+                        }
+                        try
+                        {
+                            api.updateSettings(settings);
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        break;
+                    case ConsoleKey.G:
+                        Console.WriteLine("Send heartbeat");
+                        try
+                        {
+                            api.heartbeat();
                         }
                         catch (Exception e)
                         {

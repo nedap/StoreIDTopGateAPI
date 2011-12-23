@@ -97,6 +97,22 @@ namespace StoreIDTopGateAPI
             String httpResult = doHttpRequest("/service/actions", "POST", toJson(actions, typeof(Actions)));
         }
 
+        public Settings getSettings()
+        {
+            String httpResult = doHttpRequest("/service/settings", "GET");
+            return (Settings)fromJson(httpResult, typeof(Settings));
+        }
+
+        public void updateSettings(Settings settings)
+        {
+            String httpResult = doHttpRequest("/service/settings", "PUT", toJson(settings, typeof(Settings)));
+        }
+
+        public void heartbeat()
+        {
+            String httpResult = doHttpRequest("/heartbeat", "GET");
+        }
+
         public void testConnection() {
             try {
                 String httpResult = doHttpRequest("/status");
@@ -140,6 +156,7 @@ namespace StoreIDTopGateAPI
                 request.Method = requestMethod;
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+            Console.WriteLine("Response code = " + response.StatusCode);
             StreamReader streamReader = new StreamReader(response.GetResponseStream());
             String result = "";
 
