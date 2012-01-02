@@ -516,7 +516,7 @@ public class App {
         } catch (Exception e) {
         }
         System.out.println("Creating subscription...");
-        Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname+ ":" + testApiPortnr + "/", "", 30);
+        Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
         try {
             testApiSubscription = api.createSubscription(testApiSubscription);
         } catch (Exception e) {

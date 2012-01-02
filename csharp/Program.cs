@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Timers;
+using System.Net;
+using System.Threading;
 
 namespace StoreIDTopGateAPI
 {
@@ -10,6 +13,9 @@ namespace StoreIDTopGateAPI
         static void Main(string[] args)
         {
             Console.WriteLine("Store !D API tester for !D Top and !D Gate");
+
+            args = new string[1];
+            args[0] = "http://10.2.16.48:8081";
 
             if (args.Length == 0)
             {
@@ -28,6 +34,7 @@ namespace StoreIDTopGateAPI
                 Console.WriteLine("------------------------------------------------------");
                 Console.WriteLine("0. Test connection          1. Show status");
                 Console.WriteLine("c. Send action              g. send heartbeat");
+                Console.WriteLine("d. Create spec, subscription and receive incoming events");
                 Console.WriteLine("e. Get settings             f. Update settings");
                 Console.WriteLine("-- SPECS --                 -- SUBSCRIPTIONS --");
                 Console.WriteLine("2. Show all specs           7. Show all subscriptions");
@@ -396,6 +403,19 @@ namespace StoreIDTopGateAPI
                             Console.WriteLine(e.ToString());
                         }
                         break;
+                    case ConsoleKey.D:
+                        Console.Write("On what hostname or IP address is this system reachable by the !D Top or !D Gate: ");
+                        String testApiHostname = "";
+                        try
+                        {
+                            testApiHostname = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        testApi(api, testApiHostname);
+                        break;
                     case ConsoleKey.E:
                         Console.WriteLine("Get settings");
                         try
@@ -542,6 +562,60 @@ namespace StoreIDTopGateAPI
                         break;
                 }
             }
+        }
+
+        public static void testApi(ApiWrapper api, String ownHostname)
+        {
+
+            int testApiPortnr = 8088;
+            Console.WriteLine("Starting webserver...");
+            EventsServer server = new EventsServer(IPAddress.Parse(ownHostname), testApiPortnr);
+
+            String[] testApiSpecEvents = new String[2];
+            testApiSpecEvents[0] = "rfid.tag.arrive";
+            testApiSpecEvents[1] = "rfid.tag.depart";
+            Console.WriteLine("Creating spec...");
+            Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
+            try
+            {
+                testApiSpec = api.createSpec(testApiSpec);
+            }
+            catch (Exception)
+            {
+            }
+            Console.WriteLine("Creating subscription...");
+            Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
+            try
+            {
+                testApiSubscription = api.createSubscription(testApiSubscription);
+            }
+            catch (Exception)
+            {
+            }
+            // set timer to renew subscription every 29 minutes
+            RenewSubscriptionTimer renewSubscriptionTimer = new RenewSubscriptionTimer(api, testApiSubscription);
+            // start server
+            server.start();
+
+            Console.WriteLine("Press x and Enter to exit");
+            String key = "";
+            while (key != "x")
+            {
+                try
+                {
+                    key = Console.ReadLine();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            // cleaning up
+            server.stop();
+            Console.WriteLine("Deleting spec and subscription");
+            api.deleteSpec(testApiSpec.id);
+            api.deleteSubscription(testApiSubscription.id);
+            renewSubscriptionTimer.stop();
         }
     }
 }
