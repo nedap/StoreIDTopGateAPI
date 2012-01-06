@@ -14,9 +14,6 @@ namespace StoreIDTopGateAPI
         {
             Console.WriteLine("Store !D API tester for !D Top and !D Gate");
 
-            args = new string[1];
-            args[0] = "http://10.2.16.48:8081";
-
             if (args.Length == 0)
             {
                 Console.WriteLine("Please use URL of device as parameter, for example: http://localhost:8081");
