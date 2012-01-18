@@ -393,6 +393,7 @@ public class App {
                         System.exit(0);
                     }
                     testApi(api, testApiHostname);
+                    break;
                 case 101:    // e
                     System.out.println("Show settings");
                     try {
