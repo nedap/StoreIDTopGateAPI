@@ -33,8 +33,7 @@ namespace StoreIDTopGateAPI
                 Thread thread = new Thread(new ThreadStart(handler.handle));
                 thread.Start();
             }
-
-
+            listener.Stop();
         }
 
         public void start()
@@ -45,6 +44,7 @@ namespace StoreIDTopGateAPI
 
         public void stop()
         {
+            listener.Stop();
             myThread.Abort();
         }
     }
