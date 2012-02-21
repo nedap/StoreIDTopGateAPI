@@ -12,7 +12,7 @@ import java.util.Timer;
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Store !D API tester for !D Top and !D Gate");
+        System.out.println("Store !D API tester for !D Top and !D Gate version 1.14 Java");
         
         if (args.length==0)
         {
@@ -158,8 +158,8 @@ public class App {
                     }
                     System.out.println("Which events?");
                     System.out.println("1 = rfid.tag.arrive");
-                    System.out.println("2 = rfid.tag.depart");
-                    System.out.println("3 = rfid.tag.arrive AND rfid.tag.depart");
+                    System.out.println("2 = rfid.tag.depart (deprecated)");
+                    System.out.println("3 = rfid.tag.arrive AND rfid.tag.depart (deprecated)");
                     String updateSpecOptions = "3";
                     try {
                         updateSpecOptions = inputBuffer.readLine();
@@ -440,6 +440,16 @@ public class App {
                         settings.setBuzzerEnabled(true);
                     } else if (updateSettingsEnableBuzzer.equalsIgnoreCase("n")) {
                         settings.setBuzzerEnabled(false);
+                    }
+                    System.out.print("Buzzer volume (0-100, Enter for no change): ");
+                    String updateSettingsBuzzerVolume = "";
+                    try {
+                        updateSettingsBuzzerVolume = inputBuffer.readLine();
+                    } catch (IOException e) {
+                        System.exit(0);
+                    }
+                    if (!updateSettingsBuzzerVolume.equals("")) {
+                        settings.setBuzzerVolume(Integer.parseInt(updateSettingsBuzzerVolume));
                     }
                     System.out.print("Set a new alarm pattern? (y for yes, n for no): ");
                     String updateSettingsAlarmPattern = "";

@@ -12,7 +12,7 @@ namespace StoreIDTopGateAPI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Store !D API tester for !D Top and !D Gate");
+            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.14 C#");
 
             if (args.Length == 0)
             {
@@ -158,8 +158,8 @@ namespace StoreIDTopGateAPI
                         }
                         Console.WriteLine("Which events?");
                         Console.WriteLine("1 = rfid.tag.arrive");
-                        Console.WriteLine("2 = rfid.tag.depart");
-                        Console.WriteLine("3 = rfid.tag.arrive AND rfid.tag.depart");
+                        Console.WriteLine("2 = rfid.tag.depart (deprecated)");
+                        Console.WriteLine("3 = rfid.tag.arrive AND rfid.tag.depart (deprecated)");
                         String updateSpecOptions = "3";
                         try {
                             updateSpecOptions = Console.ReadLine();
@@ -480,6 +480,20 @@ namespace StoreIDTopGateAPI
                         else if (updateSettingsEnableBuzzer == "n")
                         {
                             settings.buzzerEnabled = false;
+                        }
+                        Console.Write("Buzzer volume (0-100, Enter for no change): ");
+                        String updateSettingsBuzzerVolume = "";
+                        try
+                        {
+                            updateSettingsBuzzerVolume = Console.ReadLine();
+                        }
+                        catch (Exception e)
+                        {
+                            Console.WriteLine(e.ToString());
+                        }
+                        if (updateSettingsBuzzerVolume != "")
+                        {
+                            settings.buzzerVolume = int.Parse(updateSettingsBuzzerVolume);
                         }
                         Console.Write("Set a new alarm pattern? (y for yes, n for no): ");
                         String updateSettingsAlarmPattern = "";
