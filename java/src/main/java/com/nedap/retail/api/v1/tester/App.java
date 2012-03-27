@@ -98,8 +98,8 @@ public class App {
                     }
                     System.out.println("Which events?");
                     System.out.println("1 = rfid.tag.arrive");
-                    System.out.println("2 = rfid.tag.depart");
-                    System.out.println("3 = rfid.tag.arrive AND rfid.tag.depart");
+                    System.out.println("2 = customer_counting");
+                    System.out.println("3 = rfid.tag.arrive AND customer_counting");
                     String createSpecOptions = "3";
                     try {
                         createSpecOptions = inputBuffer.readLine();
@@ -112,11 +112,11 @@ public class App {
                         createSpecEvents[0] = "rfid.tag.arrive";
                     } else if (createSpecOptions.equals("2")) {
                         createSpecEvents = new String[1];
-                        createSpecEvents[0] = "rfid.tag.depart";
+                        createSpecEvents[0] = "customer_counting";
                     } else {
                         createSpecEvents = new String[2];
                         createSpecEvents[0] = "rfid.tag.arrive";
-                        createSpecEvents[1] = "rfid.tag.depart";
+                        createSpecEvents[1] = "customer_counting";
                     }
                     Spec createSpec = new Spec(0, createSpecName, createSpecEvents);
                     try {
@@ -158,8 +158,8 @@ public class App {
                     }
                     System.out.println("Which events?");
                     System.out.println("1 = rfid.tag.arrive");
-                    System.out.println("2 = rfid.tag.depart (deprecated)");
-                    System.out.println("3 = rfid.tag.arrive AND rfid.tag.depart (deprecated)");
+                    System.out.println("2 = customer_counting");
+                    System.out.println("3 = rfid.tag.arrive AND customer_counting");
                     String updateSpecOptions = "3";
                     try {
                         updateSpecOptions = inputBuffer.readLine();
@@ -172,11 +172,11 @@ public class App {
                         updateSpecEvents[0] = "rfid.tag.arrive";
                     } else if (updateSpecOptions.equals("2")) {
                         updateSpecEvents = new String[1];
-                        updateSpecEvents[0] = "rfid.tag.depart";
+                        updateSpecEvents[0] = "customer_counting";
                     } else {
                         updateSpecEvents = new String[2];
                         updateSpecEvents[0] = "rfid.tag.arrive";
-                        updateSpecEvents[1] = "rfid.tag.depart";
+                        updateSpecEvents[1] = "customer_counting";
                     }
                     Spec updateSpec = new Spec(Integer.parseInt(updateSpecId), updateSpecName, updateSpecEvents);
                     try {
@@ -519,7 +519,7 @@ public class App {
         t.start();
         String[] testApiSpecEvents = new String[2];
         testApiSpecEvents[0] = "rfid.tag.arrive";
-        testApiSpecEvents[1] = "rfid.tag.depart";
+        testApiSpecEvents[1] = "customer_counting";
         System.out.println("Creating spec...");
         Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
         try {
