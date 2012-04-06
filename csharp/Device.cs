@@ -9,9 +9,6 @@ namespace StoreIDTopGateAPI
     [DataContract]
     class Device
     {
-        [Obsolete]
-        [DataMember]
-        public String physicalId { get; set; }
         [DataMember]
         public String serial { get; set; }
         [DataMember]
@@ -32,15 +29,8 @@ namespace StoreIDTopGateAPI
         public String operationalStatus { get; set; }
         [DataMember]
         public String operationalMessage { get; set; }
-        [Obsolete]
         [DataMember]
-        public String memoryUsage { get; set; }
-        [Obsolete]
-        [DataMember]
-        public List<String> cpuLoad { get; set; }
-        [Obsolete]
-        [DataMember]
-        public Uptime uptime { get; set; }
+        public String role { get; set; }
 
         public override String ToString() {
             StringBuilder result = new StringBuilder();
@@ -50,7 +40,7 @@ namespace StoreIDTopGateAPI
             result.Append("hardware version = ");
             result.Append(this.hardwareVersion);
             result.Append("\n");
-            result.Append("software version = ");
+            result.Append("firmware version = ");
             result.Append(this.softwareVersion);
             result.Append("\n");
             result.Append("description = ");
@@ -73,6 +63,9 @@ namespace StoreIDTopGateAPI
             result.Append("\n");
             result.Append("operational message = ");
             result.Append(this.operationalMessage);
+            result.Append("\n");
+            result.Append("role = ");
+            result.Append(this.role);
             return result.ToString();
         }    
     }

@@ -12,7 +12,7 @@ import java.util.Timer;
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Store !D API tester for !D Top and !D Gate version 1.14 Java");
+        System.out.println("Store !D API tester for !D Top and !D Gate version 1.15 Java");
         
         if (args.length==0)
         {

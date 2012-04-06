@@ -12,10 +12,6 @@ namespace StoreIDTopGateAPI
         [DataMember]
         public Device device { get; set; }
 
-        [Obsolete]
-        [DataMember]
-        public Reader reader { get; set; }
-
         public override String ToString()
         {
             return device.ToString();

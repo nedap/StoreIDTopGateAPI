@@ -1,13 +1,7 @@
 package com.nedap.retail.api.v1.model;
 
-import java.util.List;
-
 public class Device {
 
-    /**
-     * @deprecated
-     */
-    private String physicalId;
     private String serial;
     private String hardwareVersion;
     private String softwareVersion;
@@ -18,25 +12,7 @@ public class Device {
     private String modelURL;
     private OperationalStatus operationalStatus;
     private String operationalMessage;
-    /**
-     * @deprecated
-     */
-    private String memoryUsage;
-    /**
-     * @deprecated
-     */
-    private List<String> cpuLoad;
-    /**
-     * @deprecated
-     */
-    private Uptime uptime;
-
-    /**
-     * @deprecated
-     */
-    public String getPhysicalId() {
-        return physicalId;
-    }
+    private String role;
 
     public String getSerial() {
         return serial;
@@ -78,25 +54,8 @@ public class Device {
         return operationalMessage;
     }
 
-    /**
-     * @deprecated
-     */
-    public String getMemoryUsage() {
-        return memoryUsage;
-    }
-
-    /**
-     * @deprecated
-     */
-    public List<String> getCpuLoad() {
-        return cpuLoad;
-    }
-
-    /**
-     * @deprecated
-     */
-    public Uptime getUptime() {
-        return uptime;
+    public String getRole() {
+        return role;
     }
 
     @Override
@@ -108,7 +67,7 @@ public class Device {
         result.append("hardware version = ");
         result.append(this.hardwareVersion);
         result.append("\n");
-        result.append("software version = ");
+        result.append("firmware version = ");
         result.append(this.softwareVersion);
         result.append("\n");
         result.append("description = ");
@@ -133,6 +92,9 @@ public class Device {
         }
         result.append("operational message = ");
         result.append(this.operationalMessage);
+        result.append("\n");
+        result.append("role = ");
+        result.append(this.role);
         return result.toString();
     }
 
