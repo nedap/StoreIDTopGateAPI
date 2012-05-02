@@ -1,45 +1,85 @@
 package com.nedap.retail.api.v1.tester;
 
-import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import org.eclipse.jetty.server.Server;
 
 /**
- * Very simple HTTP server to receive API events, uses
- * EventsServerConnectionHandler to handle individual connections
+ * Wrapper for the Jetty web server
  */
 public class EventsServer implements Runnable {
     /**
-     * TCP port to listen on
+     * Jetty web server instance
      */
-    private int tcpPort;
+    private Server server;
+    /**
+     * The TCP port number to run on
+     */
+    private int portNumber;
+    /**
+     * The handler to handle requests
+     */
+    private EventsServerRequestHandler requestHandler;
+    /**
+     * How to handle events: RAW = display raw event, EPCCOUNT = count unique EPCs
+     */
+    public enum MODE {RAW, EPCCOUNT};
     
-    public EventsServer(int tcpPort) {
-        this.tcpPort = tcpPort;
+    /**
+     * Constructor
+     * @param portNumber The TCP port number to run on
+     */
+    public EventsServer(int portNumber) {
+        this.portNumber = portNumber;
+        requestHandler = new EventsServerRequestHandler();
+        requestHandler.setMode(MODE.RAW);
+    }
+
+    /**
+     * Creates an instance of the web server and starts it
+     * @throws Exception 
+     */
+    public void run() {
+        if (!isRunning()) {
+            server = new Server(portNumber);
+            server.setHandler(requestHandler);
+            try {
+                server.start();
+                server.join();
+            } catch (Exception e) {
+                System.out.println("Error starting Jetty: " + e.getMessage());
+            }
+        }
     }
     
-    public void run() {
-        // create TCP server
-        ServerSocket server = null;
-        try {
-            server = new ServerSocket(tcpPort);
-        } catch (IOException e) {
-            System.out.println(e);
-            System.exit(0);
-        }
-        
-        // wait for incoming connections
-        System.out.println("Waiting for events on port " + tcpPort);
-        Socket client = null;
-        while(true) {
+    /**
+     * Stops the web server
+     * @throws Exception 
+     */
+    public void stop() {
+        if (!isRunning() && (server != null)) {
             try {
-                client = server.accept();
-            } catch (IOException e) {
-                System.out.println(e);
+                server.stop();
+                server.destroy();
+            } catch (Exception e) {
+                System.out.println("Error stopping Jetty: " + e.getMessage());
             }
-            // start a new thread to handle this client
-            Thread t = new Thread(new EventsServerConnectionHandler(client));
-            t.start();
         }
+    }
+    
+    /**
+     * @return True when the server is running
+     */
+    public boolean isRunning() {
+        if (server==null) {
+            return false;
+        }
+        return server.isRunning();
+    }
+    
+    /**
+     * 
+     * @return 
+     */
+    public void setMode(MODE mode) {
+        requestHandler.setMode(mode);
     }
 }
