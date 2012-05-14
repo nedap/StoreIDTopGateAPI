@@ -98,8 +98,8 @@ namespace StoreIDTopGateAPI
                         }
                         Console.WriteLine("Which events?");
                         Console.WriteLine("1 = rfid.tag.arrive");
-                        Console.WriteLine("2 = customer_counting");
-                        Console.WriteLine("3 = rfid.tag.arrive AND customer_counting");
+                        Console.WriteLine("2 = rfid.tag.move");
+                        Console.WriteLine("3 = rfid.tag.arrive AND rfid.tag.move");
                         String createSpecOptions = "3";
                         try {
                             createSpecOptions = Console.ReadLine();
@@ -112,11 +112,11 @@ namespace StoreIDTopGateAPI
                             createSpecEvents[0] = "rfid.tag.arrive";
                         } else if (createSpecOptions=="2") {
                             createSpecEvents = new String[1];
-                            createSpecEvents[0] = "customer_counting";
+                            createSpecEvents[0] = "rfid.tag.move";
                         } else {
                             createSpecEvents = new String[2];
                             createSpecEvents[0] = "rfid.tag.arrive";
-                            createSpecEvents[1] = "customer_counting";
+                            createSpecEvents[1] = "rfid.tag.move";
                         }
                         Spec createSpec = new Spec(0, createSpecName, createSpecEvents);
                         try {
@@ -158,8 +158,8 @@ namespace StoreIDTopGateAPI
                         }
                         Console.WriteLine("Which events?");
                         Console.WriteLine("1 = rfid.tag.arrive");
-                        Console.WriteLine("2 = customer_counting");
-                        Console.WriteLine("3 = rfid.tag.arrive AND customer_counting");
+                        Console.WriteLine("2 = rfid.tag.move");
+                        Console.WriteLine("3 = rfid.tag.arrive AND rfid.tag.move");
                         String updateSpecOptions = "3";
                         try {
                             updateSpecOptions = Console.ReadLine();
@@ -172,11 +172,11 @@ namespace StoreIDTopGateAPI
                             updateSpecEvents[0] = "rfid.tag.arrive";
                         } else if (updateSpecOptions=="2") {
                             updateSpecEvents = new String[1];
-                            updateSpecEvents[0] = "customer_counting";
+                            updateSpecEvents[0] = "rfid.tag.move";
                         } else {
                             updateSpecEvents = new String[2];
                             updateSpecEvents[0] = "rfid.tag.arrive";
-                            updateSpecEvents[1] = "customer_counting";
+                            updateSpecEvents[1] = "rfid.tag.move";
                         }
                         Spec updateSpec = new Spec(int.Parse(updateSpecId), updateSpecName, updateSpecEvents);
                         try {
@@ -584,7 +584,7 @@ namespace StoreIDTopGateAPI
 
             String[] testApiSpecEvents = new String[2];
             testApiSpecEvents[0] = "rfid.tag.arrive";
-            testApiSpecEvents[1] = "customer_counting";
+            testApiSpecEvents[1] = "rfid.tag.move";
             Console.WriteLine("Creating spec...");
             Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
             try
