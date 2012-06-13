@@ -45,12 +45,14 @@ public class EventsServerRequestHandler extends AbstractHandler {
         
         if (this.mode == MODE.RAW) {
             System.out.println(event.toString());
+            System.out.println(event.epcList.size() + " EPCs in this event");
         }
         if (this.mode == MODE.EPCCOUNT) {
             for (EventEpc epc : event.epcList) {
                 EpcCounter.addEpc(epc.epc);
             }
-            System.out.println(EpcCounter.count() + " unique EPCs read");
+            System.out.print(EpcCounter.count() + " unique EPCs read, ");
+            System.out.println(event.epcList.size() + " EPCs in this event");
         }
     }
 }
