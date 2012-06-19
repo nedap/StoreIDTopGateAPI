@@ -18,7 +18,7 @@ public class App {
         if (args.length==0)
         {
             System.out.println("Please use URL of device as parameter, for example: http://localhost:8081");
-            System.out.println("Optionally, you can use the hostname of of this computer as second parameter to start automatic testing.");
+            System.out.println("Optionally, you can use the hostname of this computer as second parameter to start automatic testing.");
             System.out.println("Optionally, you can use the \"count\" as third parameter to count unique EPCs.");
             System.exit(0);
         }

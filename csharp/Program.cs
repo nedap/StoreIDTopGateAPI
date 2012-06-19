@@ -12,16 +12,24 @@ namespace StoreIDTopGateAPI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.15 C#");
+            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.16 C#");
 
             if (args.Length == 0)
             {
                 Console.WriteLine("Please use URL of device as parameter, for example: http://localhost:8081");
+                Console.WriteLine("Optionally, you can use the hostname of this computer as second parameter to start automatic testing.");
                 Environment.Exit(0);
             }
 
             // instantiate API wrapper
             ApiWrapper api = new ApiWrapper(args[0]);
+
+            // if second argument is given, start automatic testing
+            if (args.Length == 2)
+            {
+                testApi(api, args[1]);
+                Environment.Exit(0);
+            }
 
             Boolean running = true;
             while(running)

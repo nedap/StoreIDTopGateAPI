@@ -16,7 +16,7 @@ namespace StoreIDTopGateAPI
         [DataMember]
         public Boolean buzzerEnabled { get; set; }
         [DataMember]
-        public int buzzerVolume { get; set; }
+        public int? buzzerVolume { get; set; }
         [DataMember]
         public AlarmPattern alarmPattern { get; set; }
 
@@ -31,6 +31,28 @@ namespace StoreIDTopGateAPI
             this.buzzerEnabled = buzzerEnabled;
             this.buzzerVolume = buzzerVolume;
             this.alarmPattern = alarmPattern;
+        }
+
+        public override String ToString()
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append("reader enabled = ");
+            result.Append(this.readerEnabled);
+            result.Append("\n");
+            result.Append("lights enabled = ");
+            result.Append(this.lightsEnabled);
+            result.Append("\n");
+            result.Append("buzzer enabled = ");
+            result.Append(this.buzzerEnabled);
+            result.Append("\n");
+            result.Append("buzzer volume = ");
+            result.Append(this.buzzerVolume);
+            result.Append("\n");
+            result.Append("alarm pattern:");
+            result.Append("\n");
+            result.Append(this.alarmPattern.ToString());
+            result.Append("\n");
+            return result.ToString();
         }
     }
 }

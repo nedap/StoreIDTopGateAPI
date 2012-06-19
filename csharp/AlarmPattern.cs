@@ -29,5 +29,23 @@ namespace StoreIDTopGateAPI
             this.lightsHoldTime = lightsHoldTime;
             this.count = count;
         }
+
+        public override String ToString()
+        {
+            StringBuilder result = new StringBuilder();
+            result.Append("on time = ");
+            result.Append(this.onTime);
+            result.Append("\n");
+            result.Append("off time = ");
+            result.Append(this.offTime);
+            result.Append("\n");
+            result.Append("lights hold time = ");
+            result.Append(this.lightsHoldTime);
+            result.Append("\n");
+            result.Append("count = ");
+            result.Append(this.count);
+            result.Append("\n");
+            return result.ToString();
+        }
     }
 }

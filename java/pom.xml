@@ -3,12 +3,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.nedap.retail.api.tester</groupId>
-  <artifactId>NedapRetailApiTester</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <artifactId>StoreIdTopGateApiTester</artifactId>
+  <version>1.17</version>
   <packaging>jar</packaging>
 
-  <name>NedapRetailApiTester</name>
-  <url>http://maven.apache.org</url>
+  <name>StoreIdTopGateApiTester</name>
+  <url>http://www.nedap-retail.com</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
