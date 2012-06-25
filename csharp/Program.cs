@@ -602,13 +602,13 @@ namespace StoreIDTopGateAPI
             }
             Console.WriteLine("Creating subscription...");
             Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
-            //try
-            //{
+            try
+            {
                 testApiSubscription = api.createSubscription(testApiSubscription);
-            //}
-            //catch (Exception)
-            //{
-            //}
+            }
+            catch (Exception)
+            {
+            }
             // set timer to renew subscription every 29 minutes
             RenewSubscriptionTimer renewSubscriptionTimer = new RenewSubscriptionTimer(api, testApiSubscription);
             // start server
