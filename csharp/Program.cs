@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Timers;
-using System.Net;
-using System.Threading;
 
 namespace StoreIDTopGateAPI
 {
@@ -12,7 +9,7 @@ namespace StoreIDTopGateAPI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.16 C#");
+            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.17 C#");
 
             if (args.Length == 0)
             {
@@ -588,7 +585,8 @@ namespace StoreIDTopGateAPI
 
             int testApiPortnr = 8088;
             Console.WriteLine("Starting webserver...");
-            EventsServer server = new EventsServer(IPAddress.Parse(ownHostname), testApiPortnr);
+
+            EventsServer server = new EventsServer(testApiPortnr);
 
             String[] testApiSpecEvents = new String[2];
             testApiSpecEvents[0] = "rfid.tag.arrive";
@@ -604,17 +602,17 @@ namespace StoreIDTopGateAPI
             }
             Console.WriteLine("Creating subscription...");
             Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
-            try
-            {
+            //try
+            //{
                 testApiSubscription = api.createSubscription(testApiSubscription);
-            }
-            catch (Exception)
-            {
-            }
+            //}
+            //catch (Exception)
+            //{
+            //}
             // set timer to renew subscription every 29 minutes
             RenewSubscriptionTimer renewSubscriptionTimer = new RenewSubscriptionTimer(api, testApiSubscription);
             // start server
-            server.start();
+            server.Start();
 
             Console.WriteLine("Press x and Enter to exit");
             String key = "";
@@ -630,7 +628,8 @@ namespace StoreIDTopGateAPI
             }
 
             // cleaning up
-            server.stop();
+            server.Stop();
+            
             Console.WriteLine("Deleting spec and subscription");
             api.deleteSpec(testApiSpec.id);
             api.deleteSubscription(testApiSubscription.id);
