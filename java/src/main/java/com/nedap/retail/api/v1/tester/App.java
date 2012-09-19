@@ -13,7 +13,7 @@ import java.util.Timer;
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Store !D API tester for !D Top and !D Gate version 1.17 Java");
+        System.out.println("Store !D API tester for !D Top and !D Gate version 1.18 Java");
         
         if (args.length==0)
         {
@@ -537,6 +537,17 @@ public class App {
         System.out.println("Starting webserver...");
         Thread t = new Thread(new EventsServer(testApiPortnr));
         t.start();
+        
+        boolean systemOffline = true;
+        while (systemOffline) {
+            try {
+                api.heartbeat();
+                systemOffline = false;
+            } catch (Exception e) {
+                System.out.println("System is offline. Will keep trying...");
+            }
+        }
+        
         String[] testApiSpecEvents = new String[2];
         testApiSpecEvents[0] = "rfid.tag.arrive";
         testApiSpecEvents[1] = "rfid.tag.move";

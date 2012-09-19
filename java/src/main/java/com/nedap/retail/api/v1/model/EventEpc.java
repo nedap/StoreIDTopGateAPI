@@ -6,4 +6,5 @@ package com.nedap.retail.api.v1.model;
 public class EventEpc {
     public long time;
     public String epc;
+    public String eas_status;
 }

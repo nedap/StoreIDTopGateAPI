@@ -124,6 +124,8 @@ public class ApiWrapper {
         Gson gson = new Gson();
         URL device = new URL(this.baseUrl + url);
         HttpURLConnection connection = (HttpURLConnection) device.openConnection();
+        connection.setConnectTimeout(1000);
+        connection.setReadTimeout(1000);
         if (requestMethod.equals("GET")) {
             // is the default, do nothing
         } else if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
