@@ -13,6 +13,7 @@ public class Device {
     private OperationalStatus operationalStatus;
     private String operationalMessage;
     private String role;
+    private String systemId;
 
     public String getSerial() {
         return serial;
@@ -58,6 +59,10 @@ public class Device {
         return role;
     }
 
+    public String getSystemId() {
+        return systemId;
+    }
+
     @Override
     public String toString() {
         StringBuilder result = new StringBuilder();
@@ -95,6 +100,9 @@ public class Device {
         result.append("\n");
         result.append("role = ");
         result.append(this.role);
+        result.append("\n");
+        result.append("system id = ");
+        result.append(this.systemId);
         return result.toString();
     }
 

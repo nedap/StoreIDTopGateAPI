@@ -31,6 +31,8 @@ namespace StoreIDTopGateAPI
         public String operationalMessage { get; set; }
         [DataMember]
         public String role { get; set; }
+        [DataMember]
+        public String systemId { get; set; }
 
         public override String ToString() {
             StringBuilder result = new StringBuilder();
@@ -66,6 +68,9 @@ namespace StoreIDTopGateAPI
             result.Append("\n");
             result.Append("role = ");
             result.Append(this.role);
+            result.Append("\n");
+            result.Append("system id = ");
+            result.Append(this.systemId);
             return result.ToString();
         }    
     }

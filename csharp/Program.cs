@@ -9,7 +9,7 @@ namespace StoreIDTopGateAPI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.17 C#");
+            Console.WriteLine("Store !D API tester for !D Top and !D Gate version 1.19 C#");
 
             if (args.Length == 0)
             {
