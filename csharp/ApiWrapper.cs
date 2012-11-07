@@ -153,6 +153,7 @@ namespace StoreIDTopGateAPI
             }
             else if (requestMethod == "DELETE")
             {
+                request.ContentType = "application/json";
                 request.Method = requestMethod;
             }
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
