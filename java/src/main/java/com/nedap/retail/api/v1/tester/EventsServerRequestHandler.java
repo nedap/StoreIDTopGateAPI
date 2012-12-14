@@ -43,16 +43,46 @@ public class EventsServerRequestHandler extends AbstractHandler {
         Gson gson = new Gson();
         Event event = gson.fromJson(reader, Event.class);
         
-        if (this.mode == MODE.RAW) {
-            System.out.println(event.toString());
-            System.out.println(event.epcList.size() + " EPCs in this event");
-        }
-        if (this.mode == MODE.EPCCOUNT) {
-            for (EventEpc epc : event.epcList) {
-                EpcCounter.addEpc(epc.epc);
-            }
-            System.out.print(EpcCounter.count() + " unique EPCs read, ");
-            System.out.println(event.epcList.size() + " EPCs in this event");
+        switch(this.mode) {
+            case RAW:
+                System.out.println(event.toString());
+                System.out.println(event.epcList.size() + " EPCs in this event");
+                break;
+            case EPCCOUNT:
+                for (EventEpc epc : event.epcList) {
+                    EpcCounter.addEpc(epc.epc);
+                }
+                System.out.print(EpcCounter.count() + " unique EPCs read, ");
+                System.out.println(event.epcList.size() + " EPCs in this event");
+                break;
+            case EPCLOG:
+                System.out.println(event.toString());
+                System.out.println(event.epcList.size() + " EPCs in this event");
+                StringBuilder prefix = new StringBuilder();
+                prefix.append("\"");
+                prefix.append(event.id);
+                prefix.append("\";\"");
+                prefix.append(event.type);
+                prefix.append("\";\"");
+                prefix.append(event.occurTime);
+                prefix.append("\";\"");
+                if (event.direction!=null) {
+                    prefix.append(event.direction);
+                }
+                prefix.append("\";\"");
+                for (EventEpc epc : event.epcList) {
+                    StringBuilder line = new StringBuilder(prefix);
+                    line.append(epc.epc);
+                    line.append("\";\"");
+                    line.append(epc.time);
+                    line.append("\";\"");
+                    if (epc.eas_status!=null) {
+                        line.append(epc.eas_status);
+                    }
+                    line.append("\"");
+                    LogFile.write(line.toString());
+                }
+                break;
         }
     }
 }

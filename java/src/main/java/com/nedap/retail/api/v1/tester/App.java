@@ -13,22 +13,27 @@ import java.util.Timer;
  */
 public class App {
     public static void main(String[] args) {
-        System.out.println("Store !D API tester for !D Top and !D Gate version 1.19 Java");
+        System.out.println("Store !D API tester for !D Top and !D Gate version 1.20 Java");
         
         if (args.length==0)
         {
             System.out.println("Please use URL of device as parameter, for example: http://localhost:8081");
             System.out.println("Optionally, you can use the hostname of this computer as second parameter to start automatic testing.");
-            System.out.println("Optionally, you can use the \"count\" as third parameter to count unique EPCs.");
+            System.out.println("Optionally, you can use the \"count\" as third parameter to count unique EPCs or \"log\" to log the events in CSV file format.");
             System.exit(0);
         }
         
         // instantiate API wrapper
         ApiWrapper api = new ApiWrapper(args[0]);
 
-        // if third argument is given, start epc counting
-        if (args.length==3) {
+        // if third argument is "count", start epc counting
+        if ((args.length==3) && (args[2].equals("count"))) {
             countEpc(api, args[1]);
+            System.exit(0);
+        }
+        // if third argument is "log", start epc logging
+        if ((args.length==3) && (args[2].equals("log"))) {
+            logEpc(api, args[1]);
             System.exit(0);
         }
 
@@ -655,5 +660,68 @@ public class App {
             LogFile.write(epc.toString());
         }
         System.out.println("EPCs written to " + LogFile.filename);
+    }
+
+    public static void logEpc(ApiWrapper api, String ownHostname) {
+        BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.print("Enter a description for the log file: ");
+        String description = "";
+        try {
+            description = inputBuffer.readLine();
+        } catch (IOException e) {
+        }
+        LogFile.write(description);
+        LogFile.write("\"eventId\";\"eventType\";\"occurTime\";\"direction\";\"EPC\";\"time\";\"easStatus\"");
+        System.out.println("Writing EPCs to " + LogFile.filename);
+
+        int testApiPortnr = 8088;
+        System.out.println("Starting webserver...");
+        EventsServer server = new EventsServer(testApiPortnr);
+        server.setMode(MODE.EPCLOG);
+        Thread t = new Thread(server);
+        t.start();
+        String[] testApiSpecEvents = new String[2];
+        testApiSpecEvents[0] = "rfid.tag.arrive";
+        testApiSpecEvents[1] = "rfid.tag.move";
+        System.out.println("Creating spec...");
+        Spec testApiSpec = new Spec(0, "epclog", testApiSpecEvents);
+        try {
+            testApiSpec = api.createSpec(testApiSpec);
+        } catch (Exception e) {
+        }
+        System.out.println("Creating subscription...");
+        Subscription testApiSubscription = new Subscription(0, "epclog", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
+        try {
+            testApiSubscription = api.createSubscription(testApiSubscription);
+        } catch (Exception e) {
+        }
+        // set timer to renew subscription every 29 minutes
+        RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
+        System.out.println("Press x and Enter to exit");
+        String key = "";
+        while(!key.equals("x")) {
+            try {
+                key = inputBuffer.readLine();
+            } catch (IOException e) {
+            }
+        }
+
+        System.out.println("Deleting spec and subscription");
+        try {
+            api.deleteSpec(testApiSpec.getId());
+        } catch (Exception e) {
+        }
+        try {
+            api.deleteSubscription(testApiSubscription.getId());
+        } catch (Exception e) {
+        }
+        try {
+            inputBuffer.close();
+        } catch (Exception e) {
+        }
+        timer.cancel();
     }
 }

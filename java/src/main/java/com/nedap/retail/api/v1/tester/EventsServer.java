@@ -19,9 +19,10 @@ public class EventsServer implements Runnable {
      */
     private EventsServerRequestHandler requestHandler;
     /**
-     * How to handle events: RAW = display raw event, EPCCOUNT = count unique EPCs
+     * How to handle events: RAW = display raw event, EPCCOUNT = count unique
+     * EPCs, EPCLOG = write events to CSV file
      */
-    public enum MODE {RAW, EPCCOUNT};
+    public enum MODE {RAW, EPCCOUNT, EPCLOG};
     
     /**
      * Constructor
