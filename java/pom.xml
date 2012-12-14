@@ -4,7 +4,7 @@
 
   <groupId>com.nedap.retail.api.tester</groupId>
   <artifactId>StoreIdTopGateApiTester</artifactId>
-  <version>1.17</version>
+  <version>1.20</version>
   <packaging>jar</packaging>
 
   <name>StoreIdTopGateApiTester</name>
