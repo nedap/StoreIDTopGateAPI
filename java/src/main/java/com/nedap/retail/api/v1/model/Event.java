@@ -12,6 +12,7 @@ public class Event {
     public String type;
     public long occurTime;
     public String direction;
+    public String extern_ref;
     public List<EventEpc> epcList = new ArrayList<EventEpc>();
     
     @Override
