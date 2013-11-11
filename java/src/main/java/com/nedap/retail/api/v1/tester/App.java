@@ -1,6 +1,11 @@
 package com.nedap.retail.api.v1.tester;
 
-import com.nedap.retail.api.v1.model.*;
+import com.nedap.retail.api.v1.model.Action;
+import com.nedap.retail.api.v1.model.Actions;
+import com.nedap.retail.api.v1.model.AlarmPattern;
+import com.nedap.retail.api.v1.model.Settings;
+import com.nedap.retail.api.v1.model.Spec;
+import com.nedap.retail.api.v1.model.Subscription;
 import com.nedap.retail.api.v1.tester.EventsServer.MODE;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,39 +17,39 @@ import java.util.Timer;
  *
  */
 public class App {
+
     public static void main(String[] args) {
         System.out.println("Store !D API tester for !D Top and !D Gate version 1.21 Java");
-        
-        if (args.length==0)
-        {
+
+        if (args.length == 0) {
             System.out.println("Please use URL of device as parameter, for example: http://localhost:8081");
             System.out.println("Optionally, you can use the hostname of this computer as second parameter to start automatic testing.");
             System.out.println("Optionally, you can use the \"count\" as third parameter to count unique EPCs or \"log\" to log the events in CSV file format.");
             System.exit(0);
         }
-        
+
         // instantiate API wrapper
         ApiWrapper api = new ApiWrapper(args[0]);
 
         // if third argument is "count", start epc counting
-        if ((args.length==3) && (args[2].equals("count"))) {
+        if ((args.length == 3) && (args[2].equals("count"))) {
             countEpc(api, args[1]);
             System.exit(0);
         }
         // if third argument is "log", start epc logging
-        if ((args.length==3) && (args[2].equals("log"))) {
+        if ((args.length == 3) && (args[2].equals("log"))) {
             logEpc(api, args[1]);
             System.exit(0);
         }
 
         // if second argument is given, start automatic testing
-        if (args.length==2) {
+        if (args.length == 2) {
             testApi(api, args[1]);
             System.exit(0);
         }
-        
+
         boolean running = true;
-        while(running) {
+        while (running) {
             // show menu
             System.out.println();
             System.out.println("------------------------------------------------------");
@@ -60,7 +65,7 @@ public class App {
             System.out.println("5. Update a spec            a. Update a subscription");
             System.out.println("6. Delete a spec            b. Delete a subscription");
             System.out.println("Please enter your choice and press Enter, or just Enter to exit.");
-            
+
             // get choice
             BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
             String input = "";
@@ -69,18 +74,18 @@ public class App {
             } catch (IOException e) {
                 System.exit(0);
             }
-            
+
             // exit if no choice made
-            if (input.length()==0) {
+            if (input.length() == 0) {
                 System.exit(0);
             }
-            
+
             // print line
             System.out.println("------------------------------------------------------");
-            
+
             // check what choice has been made
             int keycode = input.codePointAt(0);
-            switch(keycode) {
+            switch (keycode) {
                 case 48:    // 0
                     System.out.println("Test connection");
                     api.testConnection();
@@ -253,7 +258,7 @@ public class App {
                         System.exit(0);
                     }
                     Integer createSubscriptionLeaseTime = 0;
-                    if (createSubscriptionLease.length()>0) {
+                    if (createSubscriptionLease.length() > 0) {
                         createSubscriptionLeaseTime = Integer.parseInt(createSubscriptionLease);
                     }
                     Subscription createSubscription = new Subscription(0, createSubscriptionSpecName, createSubscriptionUri, createSubscriptionExternRef, createSubscriptionLeaseTime);
@@ -316,7 +321,7 @@ public class App {
                         System.exit(0);
                     }
                     Integer updateSubscriptionLeaseTime = 0;
-                    if (updateSubscriptionLease.length()>0) {
+                    if (updateSubscriptionLease.length() > 0) {
                         updateSubscriptionLeaseTime = Integer.parseInt(updateSubscriptionLease);
                     }
                     Subscription updateSubscription = new Subscription(Integer.parseInt(updateSubscriptionId), updateSubscriptionSpecName, updateSubscriptionUri, updateSubscriptionExternRef, updateSubscriptionLeaseTime);
@@ -381,7 +386,7 @@ public class App {
                     } catch (IOException e) {
                         System.exit(0);
                     }
-                    
+
                     try {
                         String sendActionAction = "";
                         if (sendActionOptions.equals("1")) {
@@ -505,7 +510,7 @@ public class App {
                         alarmPattern.setCount(Integer.parseInt(updateSettingsInput));
                         settings.setAlarmPattern(alarmPattern);
                     }
-                    
+
                     try {
                         api.updateSettings(settings);
                     } catch (Exception e) {
@@ -534,7 +539,7 @@ public class App {
             }
         }
     }
-    
+
     public static void testApi(ApiWrapper api, String ownHostname) {
         BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in));
 
@@ -542,7 +547,7 @@ public class App {
         System.out.println("Starting webserver...");
         Thread t = new Thread(new EventsServer(testApiPortnr));
         t.start();
-        
+
         boolean systemOffline = true;
         while (systemOffline) {
             try {
@@ -552,7 +557,7 @@ public class App {
                 System.out.println("System is offline. Will keep trying...");
             }
         }
-        
+
         String[] testApiSpecEvents = new String[2];
         testApiSpecEvents[0] = "rfid.tag.arrive";
         testApiSpecEvents[1] = "rfid.tag.move";
@@ -563,7 +568,7 @@ public class App {
         } catch (Exception e) {
         }
         System.out.println("Creating subscription...");
-        Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
+        Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
         try {
             testApiSubscription = api.createSubscription(testApiSubscription);
         } catch (Exception e) {
@@ -571,10 +576,10 @@ public class App {
         // set timer to renew subscription every 29 minutes
         RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
+        timer.scheduleAtFixedRate(task, 29 * 60 * 1000, 29 * 60 * 1000);
         System.out.println("Press x and Enter to exit");
         String key = "";
-        while(!key.equals("x")) {
+        while (!key.equals("x")) {
             try {
                 key = inputBuffer.readLine();
             } catch (IOException e) {
@@ -606,15 +611,16 @@ public class App {
             description = inputBuffer.readLine();
         } catch (IOException e) {
         }
-        
+
         int testApiPortnr = 8088;
         System.out.println("Starting webserver...");
         EventsServer server = new EventsServer(testApiPortnr);
         server.setMode(MODE.EPCCOUNT);
         Thread t = new Thread(server);
         t.start();
-        String[] testApiSpecEvents = new String[1];
+        String[] testApiSpecEvents = new String[2];
         testApiSpecEvents[0] = "rfid.tag.arrive";
+        testApiSpecEvents[1] = "rfid.tag.move";
         System.out.println("Creating spec...");
         Spec testApiSpec = new Spec(0, "epccount", testApiSpecEvents);
         try {
@@ -622,7 +628,7 @@ public class App {
         } catch (Exception e) {
         }
         System.out.println("Creating subscription...");
-        Subscription testApiSubscription = new Subscription(0, "epccount", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
+        Subscription testApiSubscription = new Subscription(0, "epccount", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
         try {
             testApiSubscription = api.createSubscription(testApiSubscription);
         } catch (Exception e) {
@@ -630,10 +636,10 @@ public class App {
         // set timer to renew subscription every 29 minutes
         RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
+        timer.scheduleAtFixedRate(task, 29 * 60 * 1000, 29 * 60 * 1000);
         System.out.println("Press x and Enter to exit");
         String key = "";
-        while(!key.equals("x")) {
+        while (!key.equals("x")) {
             try {
                 key = inputBuffer.readLine();
             } catch (IOException e) {
@@ -660,6 +666,17 @@ public class App {
             LogFile.write(epc.toString());
         }
         System.out.println("EPCs written to " + LogFile.filename);
+
+        for (String direction : EpcCounter.getEpcsPerDirection().keySet()) {
+            LogFile.filename = null;
+            LogFile.suffix = "_direction_" + direction;
+            LogFile.write(description);
+            for (String epc : EpcCounter.getEpcsPerDirection().get(direction).keySet()) {
+                LogFile.write(epc.toString());
+            }
+            System.out.println("EPCs written to " + LogFile.filename);
+        }
+
     }
 
     public static void logEpc(ApiWrapper api, String ownHostname) {
@@ -691,7 +708,7 @@ public class App {
         } catch (Exception e) {
         }
         System.out.println("Creating subscription...");
-        Subscription testApiSubscription = new Subscription(0, "epclog", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
+        Subscription testApiSubscription = new Subscription(0, "epclog", "http://" + ownHostname + ":" + testApiPortnr + "/", "tester", 30);
         try {
             testApiSubscription = api.createSubscription(testApiSubscription);
         } catch (Exception e) {
@@ -699,10 +716,10 @@ public class App {
         // set timer to renew subscription every 29 minutes
         RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
         Timer timer = new Timer();
-        timer.scheduleAtFixedRate(task, 29*60*1000, 29*60*1000);
+        timer.scheduleAtFixedRate(task, 29 * 60 * 1000, 29 * 60 * 1000);
         System.out.println("Press x and Enter to exit");
         String key = "";
-        while(!key.equals("x")) {
+        while (!key.equals("x")) {
             try {
                 key = inputBuffer.readLine();
             } catch (IOException e) {

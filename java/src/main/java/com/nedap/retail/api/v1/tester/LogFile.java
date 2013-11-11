@@ -8,12 +8,14 @@ import java.util.Date;
  * @author bas.jansen
  */
 public class LogFile {
+
     public static String filename = null;
-    
+    public static String suffix = null;
+
     public static void write(String message) {
-        if (filename==null) {
+        if (filename == null) {
             Date d = new Date();
-            filename = "log_" + d.toString().replace(" ", "_").replace(":","") + ".log";
+            filename = "log_" + d.toString().replace(" ", "_").replace(":", "") + (suffix != null ? suffix : "") + ".log";
         }
         try {
             FileWriter logfile = new FileWriter(filename, true);
