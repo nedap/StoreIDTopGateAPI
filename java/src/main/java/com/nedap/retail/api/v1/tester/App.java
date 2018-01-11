@@ -465,47 +465,7 @@ public class App {
                     if (!updateSettingsBuzzerVolume.equals("")) {
                         settings.setBuzzerVolume(Integer.parseInt(updateSettingsBuzzerVolume));
                     }
-                    System.out.print("Set a new alarm pattern? (y for yes, n for no): ");
-                    String updateSettingsAlarmPattern = "";
-                    try {
-                        updateSettingsAlarmPattern = inputBuffer.readLine();
-                    } catch (IOException e) {
-                        System.exit(0);
-                    }
-                    if (updateSettingsAlarmPattern.equalsIgnoreCase("y")) {
-                        AlarmPattern alarmPattern = new AlarmPattern();
-                        System.out.print("Time lights/buzzer are on (in milliseconds, default=400): ");
-                        String updateSettingsInput = "";
-                        try {
-                            updateSettingsInput = inputBuffer.readLine();
-                        } catch (IOException e) {
-                            System.exit(0);
-                        }
-                        alarmPattern.setOnTime(Integer.parseInt(updateSettingsInput));
-                        System.out.print("Time lights/buzzer are off (in milliseconds, default=50): ");
-                        try {
-                            updateSettingsInput = inputBuffer.readLine();
-                        } catch (IOException e) {
-                            System.exit(0);
-                        }
-                        alarmPattern.setOffTime(Integer.parseInt(updateSettingsInput));
-                        System.out.print("Time lights are on after last cycle (in milliseconds, default=7000): ");
-                        try {
-                            updateSettingsInput = inputBuffer.readLine();
-                        } catch (IOException e) {
-                            System.exit(0);
-                        }
-                        alarmPattern.setLightsHoldTime(Integer.parseInt(updateSettingsInput));
-                        System.out.print("Number of cycles (default=5): ");
-                        try {
-                            updateSettingsInput = inputBuffer.readLine();
-                        } catch (IOException e) {
-                            System.exit(0);
-                        }
-                        alarmPattern.setCount(Integer.parseInt(updateSettingsInput));
-                        settings.setAlarmPattern(alarmPattern);
-                    }
-                    
+
                     try {
                         api.updateSettings(settings);
                     } catch (Exception e) {
