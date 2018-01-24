@@ -520,13 +520,15 @@ public class App {
         Spec testApiSpec = new Spec(0, "tester", testApiSpecEvents);
         try {
             testApiSpec = api.createSpec(testApiSpec);
-        } catch (Exception e) {
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         System.out.println("Creating subscription...");
         Subscription testApiSubscription = new Subscription(0, "tester", "http://" + ownHostname+ ":" + testApiPortnr + "/", "tester", 30);
         try {
             testApiSubscription = api.createSubscription(testApiSubscription);
-        } catch (Exception e) {
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         // set timer to renew subscription every 29 minutes
         RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
@@ -537,22 +539,26 @@ public class App {
         while(!key.equals("x")) {
             try {
                 key = inputBuffer.readLine();
-            } catch (IOException e) {
+            } catch (final IOException e) {
+                e.printStackTrace();
             }
         }
 
         System.out.println("Deleting spec and subscription");
         try {
             api.deleteSpec(testApiSpec.getId());
-        } catch (Exception e) {
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         try {
             api.deleteSubscription(testApiSubscription.getId());
-        } catch (Exception e) {
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         try {
             inputBuffer.close();
-        } catch (Exception e) {
+        } catch (final Exception e) {
+            e.printStackTrace();
         }
         timer.cancel();
     }
