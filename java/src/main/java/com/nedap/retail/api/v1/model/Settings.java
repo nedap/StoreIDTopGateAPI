@@ -5,17 +5,15 @@ public class Settings {
     private Boolean lightsEnabled = null;
     private Boolean buzzerEnabled = null;
     private Integer buzzerVolume = null;
-    private AlarmPattern alarmPattern = null;
 
     public Settings() {
     }
 
-    public Settings(final Boolean readerEnabled, final Boolean lightsEnabled, final Boolean buzzerEnabled, final Integer buzzerVolume, final AlarmPattern alarmPattern) {
+    public Settings(final Boolean readerEnabled, final Boolean lightsEnabled, final Boolean buzzerEnabled, final Integer buzzerVolume) {
         this.readerEnabled = readerEnabled;
         this.lightsEnabled = lightsEnabled;
         this.buzzerEnabled = buzzerEnabled;
         this.buzzerVolume = buzzerVolume;
-        this.alarmPattern = alarmPattern;
     }
 
     public Boolean getReaderEnabled() {
@@ -50,21 +48,12 @@ public class Settings {
         this.buzzerVolume = buzzerVolume;
     }
 
-    public AlarmPattern getAlarmPattern() {
-        return alarmPattern;
-    }
-
-    public void setAlarmPattern(AlarmPattern alarmPattern) {
-        this.alarmPattern = alarmPattern;
-    }
-
     @Override
     public String toString() {
         return "readerEnabled: " + readerEnabled
                 + ", lightsEnabled: " + lightsEnabled
                 + ", buzzerEnabled: " + buzzerEnabled
-                + ", buzzerVolume: " + buzzerVolume
-                + ", alarmPattern: " + alarmPattern;
+                + ", buzzerVolume: " + buzzerVolume;
                 
     }
 }
