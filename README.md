@@ -11,7 +11,7 @@ Java and C# reference implementation and test tool.
 	mvn clean install
 
 ## To run the code
-	java -jar target/StoreIdTopGateApiTester-1.21-jar-with-dependencies.jar http://<unit ip address>:8081
+	java -jar target/StoreIdTopGateApiTester-1.22-jar-with-dependencies.jar http://<unit ip address>:8081
 	
 	Optionally, you can use the hostname of this computer as second parameter to start automatic testing
 
