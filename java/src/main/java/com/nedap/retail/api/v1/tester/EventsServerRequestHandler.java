@@ -66,7 +66,7 @@ public class EventsServerRequestHandler extends AbstractHandler {
                 prefix.append("\";\"");
                 prefix.append(event.occurTime);
                 prefix.append("\";\"");
-                if (event.direction!=null) {
+                if (event.direction != null) {
                     prefix.append(event.direction);
                 }
                 prefix.append("\";\"");
@@ -76,13 +76,15 @@ public class EventsServerRequestHandler extends AbstractHandler {
                     line.append("\";\"");
                     line.append(epc.time);
                     line.append("\";\"");
-                    if (epc.eas_status!=null) {
+                    if (epc.eas_status != null) {
                         line.append(epc.eas_status);
                     }
                     line.append("\"");
                     LogFile.write(line.toString());
                 }
                 break;
+            default:
+                System.out.println(event.toString());
         }
     }
 }
