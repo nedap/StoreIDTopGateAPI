@@ -14,6 +14,8 @@ import com.nedap.retail.api.v1.tester.EventsServer.MODE;
 public class App {
 
     private static final int TEST_API_PORTNR = 8088;
+    private static final String RFID_TAG_ARRIVE = "rfid.tag.arrive";
+    private static final String RFID_TAG_MOVE = "rfid.tag.move";
 
     public static void main(final String[] args) throws Exception {
         System.out.println("Store !D API tester for !D Top and !D Gate version 1.21 Java");
@@ -96,22 +98,22 @@ public class App {
                         final String createSpecName = inputBuffer.readLine();
 
                         System.out.println("Which events?");
-                        System.out.println("1 = rfid.tag.arrive");
-                        System.out.println("2 = rfid.tag.move");
-                        System.out.println("3 = rfid.tag.arrive AND rfid.tag.move");
+                        System.out.println("1 = " + RFID_TAG_ARRIVE);
+                        System.out.println("2 = " + RFID_TAG_MOVE);
+                        System.out.printf("3 = %s AND %s%n", RFID_TAG_ARRIVE, RFID_TAG_MOVE);
                         final String createSpecOptions = inputBuffer.readLine();
 
                         final String[] createSpecEvents;
                         if (createSpecOptions.equals("1")) {
                             createSpecEvents = new String[1];
-                            createSpecEvents[0] = "rfid.tag.arrive";
+                            createSpecEvents[0] = RFID_TAG_ARRIVE;
                         } else if (createSpecOptions.equals("2")) {
                             createSpecEvents = new String[1];
-                            createSpecEvents[0] = "rfid.tag.move";
+                            createSpecEvents[0] = RFID_TAG_MOVE;
                         } else {
                             createSpecEvents = new String[2];
-                            createSpecEvents[0] = "rfid.tag.arrive";
-                            createSpecEvents[1] = "rfid.tag.move";
+                            createSpecEvents[0] = RFID_TAG_ARRIVE;
+                            createSpecEvents[1] = RFID_TAG_MOVE;
                         }
                         final Spec createSpec = new Spec(0, createSpecName, createSpecEvents);
                         System.out.println(api.createSpec(createSpec).toString());
@@ -131,22 +133,18 @@ public class App {
                         final String updateSpecName = inputBuffer.readLine();
 
                         System.out.println("Which events?");
-                        System.out.println("1 = rfid.tag.arrive");
-                        System.out.println("2 = rfid.tag.move");
-                        System.out.println("3 = rfid.tag.arrive AND rfid.tag.move");
+                        System.out.println("1 = " + RFID_TAG_ARRIVE);
+                        System.out.println("2 = " + RFID_TAG_MOVE);
+                        System.out.printf("3 = %s AND %s%n", RFID_TAG_ARRIVE, RFID_TAG_MOVE);
                         final String updateSpecOptions = inputBuffer.readLine();
 
                         final String[] updateSpecEvents;
                         if (updateSpecOptions.equals("1")) {
-                            updateSpecEvents = new String[1];
-                            updateSpecEvents[0] = "rfid.tag.arrive";
+                            updateSpecEvents = new String[]{RFID_TAG_ARRIVE};
                         } else if (updateSpecOptions.equals("2")) {
-                            updateSpecEvents = new String[1];
-                            updateSpecEvents[0] = "rfid.tag.move";
+                            updateSpecEvents = new String[]{RFID_TAG_MOVE};
                         } else {
-                            updateSpecEvents = new String[2];
-                            updateSpecEvents[0] = "rfid.tag.arrive";
-                            updateSpecEvents[1] = "rfid.tag.move";
+                            updateSpecEvents = new String[]{RFID_TAG_ARRIVE, RFID_TAG_MOVE};
                         }
 
                         final Spec updateSpec = new Spec(
@@ -364,11 +362,8 @@ public class App {
             // set timer to renew subscription every 29 minutes
             final RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
             final Timer timer = new Timer();
-<<<<<<< HEAD
+
             timer.scheduleAtFixedRate(task, 29L * 60L * 1000L, 29L * 60L * 1000L);
-=======
-            timer.scheduleAtFixedRate(task, 29 * 60 * 1000, 29 * 60 * 1000);
->>>>>>> Fix code style and formatting
 
             System.out.println("Press x and Enter to exit");
             String key = "";
@@ -429,7 +424,7 @@ public class App {
         }
     }
 
-    public static void logEpc(ApiWrapper api, String ownHostname) throws Exception {
+    public static void logEpc(final ApiWrapper api, final String ownHostname) throws Exception {
         try(final BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(System.in))) {
             System.out.print("Enter a description for the log file: ");
             final String description = inputBuffer.readLine();
@@ -443,13 +438,14 @@ public class App {
             final Thread t = new Thread(server);
             t.start();
 
-            final String[] testApiSpecEvents = new String[]{ "rfid.tag.arrive", "rfid.tag.move"};
+            final String[] testApiSpecEvents = new String[]{ RFID_TAG_ARRIVE, RFID_TAG_MOVE};
             System.out.println("Creating spec...");
             final Spec testApiSpec = api.createSpec(new Spec(0, "epclog", testApiSpecEvents));
 
             System.out.println("Creating subscription...");
-            final Subscription testApiSubscription = api.createSubscription(new Subscription(0, "epclog",
-                    "http://" + ownHostname + ":" + TEST_API_PORTNR + "/", "tester", 30));
+            final Subscription testApiSubscription = api.createSubscription(new Subscription(
+                    0, "epclog", "http://" + ownHostname + ":" + TEST_API_PORTNR + "/", "tester", 30
+            ));
 
             // set timer to renew subscription every 29 minutes
             final RenewSubscriptionTask task = new RenewSubscriptionTask(api, testApiSubscription);
