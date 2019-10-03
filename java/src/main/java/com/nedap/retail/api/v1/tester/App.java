@@ -281,36 +281,36 @@ public class App {
                         break;
                     case 'f':
                         System.out.println("Update settings");
-                        final Settings settings = new Settings();
+                        Settings settings = new Settings();
 
                         System.out.print("Enable RFID reader (y for yes, n for no, anything else for no change): ");
                         final String updateSettingsEnableReader = inputBuffer.readLine();
                         if (updateSettingsEnableReader.equalsIgnoreCase("y")) {
-                            settings.setReaderEnabled(true);
+                            settings = settings.setReaderEnabled(true);
                         } else if (updateSettingsEnableReader.equalsIgnoreCase("n")) {
-                            settings.setReaderEnabled(false);
+                            settings = settings.setReaderEnabled(false);
                         }
 
                         System.out.print("Enable lights (y for yes, n for no, anything else for no change): ");
                         final String updateSettingsEnableLights = inputBuffer.readLine();
                         if (updateSettingsEnableLights.equalsIgnoreCase("y")) {
-                            settings.setLightsEnabled(true);
+                            settings = settings.setLightsEnabled(true);
                         } else if (updateSettingsEnableLights.equalsIgnoreCase("n")) {
-                            settings.setLightsEnabled(false);
+                            settings = settings.setLightsEnabled(false);
                         }
 
                         System.out.print("Enable buzzer (y for yes, n for no, anything else for no change): ");
                         final String updateSettingsEnableBuzzer = inputBuffer.readLine();
                         if (updateSettingsEnableBuzzer.equalsIgnoreCase("y")) {
-                            settings.setBuzzerEnabled(true);
+                            settings = settings.setBuzzerEnabled(true);
                         } else if (updateSettingsEnableBuzzer.equalsIgnoreCase("n")) {
-                            settings.setBuzzerEnabled(false);
+                            settings = settings.setBuzzerEnabled(false);
                         }
 
                         System.out.print("Buzzer volume (0-100, Enter for no change): ");
                         final String updateSettingsBuzzerVolume = inputBuffer.readLine();
                         if (!updateSettingsBuzzerVolume.equals("")) {
-                            settings.setBuzzerVolume(Integer.parseInt(updateSettingsBuzzerVolume));
+                            settings = settings.setBuzzerVolume(Integer.parseInt(updateSettingsBuzzerVolume));
                         }
 
                         api.updateSettings(settings);
@@ -420,7 +420,7 @@ public class App {
             for (final Object epc : EpcCounter.getEpcs().keySet()) {
                 LogFile.write(epc.toString());
             }
-            System.out.println("EPCs written to " + LogFile.filename);
+            System.out.println("EPCs written to " + LogFile.FILENAME);
         }
     }
 
@@ -431,7 +431,7 @@ public class App {
             LogFile.write(description);
             LogFile.write("\"eventId\";\"eventType\";\"occurTime\";\"direction\";\"EPC\";\"time\";\"easStatus\"");
 
-            System.out.println("Writing EPCs to " + LogFile.filename);
+            System.out.println("Writing EPCs to " + LogFile.FILENAME);
             System.out.println("Starting webserver...");
             final EventsServer server = new EventsServer(TEST_API_PORTNR);
             server.setMode(MODE.EPCLOG);

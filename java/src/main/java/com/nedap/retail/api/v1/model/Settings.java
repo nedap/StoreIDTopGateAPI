@@ -1,12 +1,16 @@
 package com.nedap.retail.api.v1.model;
 
 public class Settings {
-    private Boolean readerEnabled = null;
-    private Boolean lightsEnabled = null;
-    private Boolean buzzerEnabled = null;
-    private Integer buzzerVolume = null;
+    private final Boolean readerEnabled;
+    private final Boolean lightsEnabled;
+    private final Boolean buzzerEnabled;
+    private final Integer buzzerVolume;
 
     public Settings() {
+        this.readerEnabled = null;
+        this.lightsEnabled = null;
+        this.buzzerEnabled = null;
+        this.buzzerVolume = null;
     }
 
     public Settings(final Boolean readerEnabled, final Boolean lightsEnabled, final Boolean buzzerEnabled, final Integer buzzerVolume) {
@@ -20,40 +24,39 @@ public class Settings {
         return readerEnabled;
     }
 
-    public void setReaderEnabled(Boolean readerEnabled) {
-        this.readerEnabled = readerEnabled;
+    public Settings setReaderEnabled(final Boolean readerEnabled) {
+        return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
     public Boolean getLightsEnabled() {
         return lightsEnabled;
     }
 
-    public void setLightsEnabled(Boolean lightsEnabled) {
-        this.lightsEnabled = lightsEnabled;
+    public Settings setLightsEnabled(final Boolean lightsEnabled) {
+        return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
     public Boolean getBuzzerEnabled() {
         return buzzerEnabled;
     }
 
-    public void setBuzzerEnabled(Boolean buzzerEnabled) {
-        this.buzzerEnabled = buzzerEnabled;
+    public Settings setBuzzerEnabled(final Boolean buzzerEnabled) {
+        return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
     public Integer getBuzzerVolume() {
         return buzzerVolume;
     }
 
-    public void setBuzzerVolume(Integer buzzerVolume) {
-        this.buzzerVolume = buzzerVolume;
+    public Settings setBuzzerVolume(final Integer buzzerVolume) {
+        return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
     @Override
     public String toString() {
-        return "readerEnabled: " + readerEnabled
-                + ", lightsEnabled: " + lightsEnabled
-                + ", buzzerEnabled: " + buzzerEnabled
-                + ", buzzerVolume: " + buzzerVolume;
-                
+        return String.format(
+                "readerEnabled: %s, lightsEnabled: %s, buzzerEnabled: %s, buzzerVolume: %s", readerEnabled,
+                lightsEnabled, buzzerEnabled, buzzerVolume
+        );
     }
 }

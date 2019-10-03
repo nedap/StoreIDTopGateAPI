@@ -1,16 +1,19 @@
 package com.nedap.retail.api.v1.model;
 
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 public class Spec {
 
-    private Integer id;
-    private String name;
-    private String[] event_types;
+    private final Integer id;
+    private final String name;
+    private final String[] eventTypes;
 
-    public Spec(final Integer id, final String name,
-            final String[] event_types) {
+    public Spec(final Integer id, final String name, final String ... eventTypes) {
         this.id = id;
         this.name = name;
-        this.event_types = event_types;
+        this.eventTypes = eventTypes;
     }
 
     public Integer getId() {
@@ -22,25 +25,16 @@ public class Spec {
     }
 
     public String[] getEventTypes() {
-        return event_types;
+        return eventTypes;
     }
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("id = ");
-        result.append(this.id);
-        result.append("\n");
-        result.append("name = ");
-        result.append(this.name);
-        result.append("\n");
-        result.append("event types = ");
-        if (event_types!=null) {
-            for (String e : event_types) {
-                result.append(e);
-                result.append(" ");
-            }
-        }
-        return result.toString();
+        return String.format(
+                "id = %d%nname = %s%nevent types = %s", this.id, this.name,
+                Optional.ofNullable(eventTypes)
+                        .map(eventTypes -> String.join("", eventTypes) + " ")
+                        .orElse("")
+        );
     }
 }

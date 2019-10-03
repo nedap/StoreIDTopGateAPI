@@ -2,18 +2,38 @@ package com.nedap.retail.api.v1.model;
 
 public class Device {
 
-    private String serial;
-    private String hardwareVersion;
-    private String softwareVersion;
-    private String description;
-    private String modelDescription;
-    private String modelName;
-    private String modelNumber;
-    private String modelURL;
-    private OperationalStatus operationalStatus;
-    private String operationalMessage;
-    private String role;
-    private String systemId;
+    private final String serial;
+    private final String hardwareVersion;
+    private final String softwareVersion;
+    private final String description;
+    private final String modelDescription;
+    private final String modelName;
+    private final String modelNumber;
+    private final String modelURL;
+    private final OperationalStatus operationalStatus;
+    private final String operationalMessage;
+    private final String role;
+    private final String systemId;
+
+    public Device(
+            final String serial, final String hardwareVersion, final String softwareVersion, final String description,
+            final String modelDescription, final String modelName, final String modelNumber, final String modelURL,
+            final OperationalStatus operationalStatus, final String operationalMessage, final String role,
+            final String systemId
+    ) {
+        this.serial = serial;
+        this.hardwareVersion = hardwareVersion;
+        this.softwareVersion = softwareVersion;
+        this.description = description;
+        this.modelDescription = modelDescription;
+        this.modelName = modelName;
+        this.modelNumber = modelNumber;
+        this.modelURL = modelURL;
+        this.operationalStatus = operationalStatus;
+        this.operationalMessage = operationalMessage;
+        this.role = role;
+        this.systemId = systemId;
+    }
 
     public String getSerial() {
         return serial;

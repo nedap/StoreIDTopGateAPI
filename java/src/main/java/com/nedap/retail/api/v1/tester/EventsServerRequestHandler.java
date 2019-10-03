@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.ServletException;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Optional;
+
 import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
@@ -30,58 +32,42 @@ public class EventsServerRequestHandler extends AbstractHandler {
      * @param baseRequest The original unwrapped request object
      * @param request The HttpServletRequest
      * @param response The HttpServletResponse
-     * @throws IOException
-     * @throws ServletException 
+     * @throws IOException When the connection breaks
      */
-    public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void handle(
+            final String target, final Request baseRequest, final HttpServletRequest request,
+            final HttpServletResponse response
+    ) throws IOException {
         response.setContentType("text/html;charset=utf-8");
         response.setStatus(HttpServletResponse.SC_OK);
         baseRequest.setHandled(true);
         response.getWriter().println("ok");
 
-        Reader reader = baseRequest.getReader();
-        Gson gson = new Gson();
-        Event event = gson.fromJson(reader, Event.class);
+        final Event event = new Gson().fromJson(baseRequest.getReader(), Event.class);
         
         switch(this.mode) {
             case RAW:
                 System.out.println(event.toString());
-                System.out.println(event.epcList.size() + " EPCs in this event");
+                System.out.println(event.getEpcList().size() + " EPCs in this event");
                 break;
             case EPCCOUNT:
-                for (EventEpc epc : event.epcList) {
-                    EpcCounter.addEpc(epc.epc);
-                }
+                event.getEpcList().stream().map(EventEpc::getEpc).forEach(EpcCounter::addEpc);
                 System.out.print(EpcCounter.count() + " unique EPCs read, ");
-                System.out.println(event.epcList.size() + " EPCs in this event");
+                System.out.println(event.getEpcList().size() + " EPCs in this event");
                 break;
             case EPCLOG:
                 System.out.println(event.toString());
-                System.out.println(event.epcList.size() + " EPCs in this event");
-                StringBuilder prefix = new StringBuilder();
-                prefix.append("\"");
-                prefix.append(event.id);
-                prefix.append("\";\"");
-                prefix.append(event.type);
-                prefix.append("\";\"");
-                prefix.append(event.occurTime);
-                prefix.append("\";\"");
-                if (event.direction != null) {
-                    prefix.append(event.direction);
-                }
-                prefix.append("\";\"");
-                for (EventEpc epc : event.epcList) {
-                    StringBuilder line = new StringBuilder(prefix);
-                    line.append(epc.epc);
-                    line.append("\";\"");
-                    line.append(epc.time);
-                    line.append("\";\"");
-                    if (epc.eas_status != null) {
-                        line.append(epc.eas_status);
-                    }
-                    line.append("\"");
-                    LogFile.write(line.toString());
-                }
+                System.out.println(event.getEpcList().size() + " EPCs in this event");
+                final String prefix = String.format(
+                        "\"%s\";\"%s\";\"%d\";\"%s\";", event.getId(), event.getType(), event.getOccurTime(),
+                        Optional.ofNullable(event.getDirection()).orElse("")
+                );
+                event.getEpcList().forEach(epc ->
+                    LogFile.write(String.format(
+                            "%s%s\";\"%d\";\"%s\"", prefix, epc.getEpc(), epc.getTime(),
+                            Optional.ofNullable(epc.getEasStatus()).orElse("")
+                    ))
+                );
                 break;
             default:
                 System.out.println(event.toString());

@@ -1,10 +1,16 @@
 package com.nedap.retail.api.v1.model;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SubscriptionList {
 
-    private List<Subscription> subscriptions;
+    private final List<Subscription> subscriptions;
+
+    public SubscriptionList(final Subscription ... subscriptions) {
+        this.subscriptions = Arrays.asList(subscriptions);
+    }
 
     public List<Subscription> getSubscriptions() {
         return subscriptions;
@@ -12,14 +18,11 @@ public class SubscriptionList {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(subscriptions.size());
-        result.append(" subscription(s):\n");
-        for (Subscription s : subscriptions) {
-            result.append(s.toString());
-            result.append("\n");
-        }
-        return result.toString();
+        return String.format(
+                "%d subscription(s):%n%s", subscriptions.size(),
+                subscriptions.stream()
+                        .map(Subscription::toString)
+                        .collect(Collectors.joining("\n"))
+        );
     }
-
 }
