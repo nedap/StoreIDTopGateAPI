@@ -24,7 +24,7 @@ public class Settings {
         return readerEnabled;
     }
 
-    public Settings setReaderEnabled(final Boolean readerEnabled) {
+    public Settings withReaderEnabled(final Boolean readerEnabled) {
         return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
@@ -32,7 +32,7 @@ public class Settings {
         return lightsEnabled;
     }
 
-    public Settings setLightsEnabled(final Boolean lightsEnabled) {
+    public Settings withLightsEnabled(final Boolean lightsEnabled) {
         return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
@@ -40,7 +40,7 @@ public class Settings {
         return buzzerEnabled;
     }
 
-    public Settings setBuzzerEnabled(final Boolean buzzerEnabled) {
+    public Settings withBuzzerEnabled(final Boolean buzzerEnabled) {
         return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 
@@ -48,7 +48,7 @@ public class Settings {
         return buzzerVolume;
     }
 
-    public Settings setBuzzerVolume(final Integer buzzerVolume) {
+    public Settings withBuzzerVolume(final Integer buzzerVolume) {
         return new Settings(readerEnabled, lightsEnabled, buzzerEnabled, buzzerVolume);
     }
 

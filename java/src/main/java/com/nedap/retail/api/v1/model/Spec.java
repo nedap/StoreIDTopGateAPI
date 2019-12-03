@@ -1,13 +1,14 @@
 package com.nedap.retail.api.v1.model;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Spec {
 
     private final Integer id;
     private final String name;
+    @SerializedName("event_types")
     private final String[] eventTypes;
 
     public Spec(final Integer id, final String name, final String ... eventTypes) {
@@ -33,7 +34,7 @@ public class Spec {
         return String.format(
                 "id = %d%nname = %s%nevent types = %s", this.id, this.name,
                 Optional.ofNullable(eventTypes)
-                        .map(eventTypes -> String.join("", eventTypes) + " ")
+                        .map(eventTypes -> String.join(", ", eventTypes))
                         .orElse("")
         );
     }

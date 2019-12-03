@@ -7,13 +7,10 @@ import java.util.Date;
  *
  * @author bas.jansen
  */
-public class LogFile {
-    public static String FILENAME = null;
-    
+public enum LogFile {;
+    public static final String FILENAME = "log_" + new Date().toString().replace(" ", "_").replace(":","") + ".log";
+
     public static void write(final String message) {
-        if (FILENAME == null) {
-            FILENAME = "log_" + new Date().toString().replace(" ", "_").replace(":","") + ".log";
-        }
         try (final FileWriter logfile = new FileWriter(FILENAME, true)){
             logfile.write(message + "\n");
         } catch (final Exception e) {

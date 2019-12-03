@@ -3,9 +3,12 @@ package com.nedap.retail.api.v1.tester;
 import com.google.gson.Gson;
 import com.nedap.retail.api.v1.model.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
         
 /**
@@ -27,49 +30,49 @@ public class ApiWrapper {
         }
     }
     
-    public Status getStatus() throws Exception {
+    public Status getStatus() throws IOException {
         return new Gson().fromJson(doHttpRequest("/status"), Status.class);
     }
 
-    public SpecList getSpecs() throws Exception {
+    public SpecList getSpecs() throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/specs"), SpecList.class);
     }
     
-    public Spec createSpec(final Spec spec) throws Exception {
+    public Spec createSpec(final Spec spec) throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/specs", "POST", spec), Spec.class);
     }
 
-    public Spec getSpec(final Integer id) throws Exception {
+    public Spec getSpec(final Integer id) throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/specs/" + id), Spec.class);
     }
 
-    public void deleteSpec(final Integer id) throws Exception {
+    public void deleteSpec(final Integer id) throws IOException {
         doHttpRequest("/service/events/specs/" + id, "DELETE");
     }
 
-    public Spec updateSpec(final Spec spec) throws Exception {
+    public Spec updateSpec(final Spec spec) throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/specs/" + spec.getId(), "PUT", spec), Spec.class);
     }
 
-    public SubscriptionList getSubscriptions() throws Exception {
+    public SubscriptionList getSubscriptions() throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/subscriptions"), SubscriptionList.class);
     }
     
-    public Subscription createSubscription(final Subscription subscription) throws Exception {
+    public Subscription createSubscription(final Subscription subscription) throws IOException {
         return new Gson().fromJson(
                 doHttpRequest("/service/events/subscriptions", "POST", subscription), Subscription.class
         );
     }
 
-    public Subscription getSubscription(final Integer id) throws Exception {
+    public Subscription getSubscription(final Integer id) throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/events/subscriptions/" + id), Subscription.class);
     }
 
-    public void deleteSubscription(final Integer id) throws Exception {
+    public void deleteSubscription(final Integer id) throws IOException {
         doHttpRequest("/service/events/subscriptions/" + id, "DELETE");
     }
 
-    public Subscription updateSubscription(final Subscription subscription) throws Exception {
+    public Subscription updateSubscription(final Subscription subscription) throws IOException {
         return new Gson().fromJson(
                 doHttpRequest(
                         "/service/events/subscriptions/" + subscription.getId(), "PUT", subscription
@@ -77,32 +80,31 @@ public class ApiWrapper {
         );
     }
 
-    public void sendActions(final Actions actions) throws Exception {
+    public void sendActions(final Actions actions) throws IOException {
         doHttpRequest("/service/actions", "POST", actions);
     }
 
-    public Settings getSettings() throws Exception {
+    public Settings getSettings() throws IOException {
         return new Gson().fromJson(doHttpRequest("/service/settings"), Settings.class);
     }
     
-    public void updateSettings(final Settings settings) throws Exception {
+    public void updateSettings(final Settings settings) throws IOException {
         doHttpRequest("/service/settings", "PUT", settings);
     }
 
-    public void heartbeat() throws Exception {
+    public void heartbeat() throws IOException {
         doHttpRequest("/heartbeat", "GET");
     }
 
-    public void testConnection() throws Exception {
-        final String httpResult = doHttpRequest("/status");
-        if (httpResult.length() > 4) {
+    public void testConnection() throws IOException {
+        if (doHttpRequest("/status").length() > 4) {
             System.out.println("Connection OK");
         } else {
             System.out.println("Invalid response received");
         }
     }
 
-    private String doHttpRequest(final String url, final String requestMethod, final Object data) throws Exception {
+    private String doHttpRequest(final String url, final String requestMethod, final Object data) throws IOException {
         final HttpURLConnection connection = (HttpURLConnection) new URL(this.baseUrl + url).openConnection();
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
@@ -130,11 +132,11 @@ public class ApiWrapper {
         }
     }
     
-    private String doHttpRequest(final String url, final String requestMethod) throws Exception {
+    private String doHttpRequest(final String url, final String requestMethod) throws IOException {
         return doHttpRequest(url, requestMethod, null);
     }
 
-    private String doHttpRequest(final String url) throws Exception {
+    private String doHttpRequest(final String url) throws IOException {
         return doHttpRequest(url, "GET", null);
     }
 }

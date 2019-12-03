@@ -25,7 +25,7 @@ public class RenewSubscriptionTask extends TimerTask {
         System.out.println("Updating subscription");
         try {
             api.updateSubscription(sub);
-        } catch (final Exception e) {
+        } catch (final Exception exception) {
             System.out.println("Error updating subscription");
         }
     }
