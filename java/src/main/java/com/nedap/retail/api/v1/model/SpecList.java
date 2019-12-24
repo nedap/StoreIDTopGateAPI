@@ -1,10 +1,16 @@
 package com.nedap.retail.api.v1.model;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SpecList {
 
-    private List<Spec> specs;
+    private final List<Spec> specs;
+
+    public SpecList(final Spec ... specs) {
+        this.specs = Arrays.asList(specs);
+    }
 
     public List<Spec> getSpecs() {
         return specs;
@@ -12,14 +18,9 @@ public class SpecList {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(specs.size());
-        result.append(" spec(s):\n");
-        for (Spec s : specs) {
-            result.append(s.toString());
-            result.append("\n");
-        }
-        return result.toString();
+        return String.format(
+                "%d spec(s):%n%s", specs.size(), specs.stream().map(Spec::toString).collect(Collectors.joining("\n"))
+        );
     }
 
 }

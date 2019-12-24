@@ -2,7 +2,11 @@ package com.nedap.retail.api.v1.model;
 
 public class Status {
 
-    private Device device;
+    private final Device device;
+
+    public Status(final Device device) {
+        this.device = device;
+    }
 
     public Device getDevice() {
         return device;
@@ -10,9 +14,6 @@ public class Status {
 
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append(device.toString());
-        return result.toString();
+        return device.toString();
     }
-
 }

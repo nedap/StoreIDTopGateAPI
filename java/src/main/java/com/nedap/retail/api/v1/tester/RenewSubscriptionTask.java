@@ -16,7 +16,7 @@ public class RenewSubscriptionTask extends TimerTask {
      */
     private Subscription sub;
     
-    public RenewSubscriptionTask(ApiWrapper api, Subscription sub) {
+    public RenewSubscriptionTask(final ApiWrapper api, final Subscription sub) {
         this.api = api;
         this.sub = sub;
     }
@@ -25,7 +25,7 @@ public class RenewSubscriptionTask extends TimerTask {
         System.out.println("Updating subscription");
         try {
             api.updateSubscription(sub);
-        } catch (Exception e) {
+        } catch (final Exception exception) {
             System.out.println("Error updating subscription");
         }
     }

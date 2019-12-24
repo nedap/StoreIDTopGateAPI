@@ -1,20 +1,25 @@
 package com.nedap.retail.api.v1.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Subscription {
 
-    private Integer id;
-    private String specname;
-    private String notification_uri;
-    private String extern_ref;
-    private int lease;
+    private final Integer id;
+    private final String specname;
+    @SerializedName("notification_uri")
+    private final String notificationUri;
+    @SerializedName("extern_ref")
+    private final String externRef;
+    private final int lease;
 
-    public Subscription(final Integer id, final String specname,
-            final String notification_uri, final String extern_ref,
-            final int lease) {
+    public Subscription(
+            final Integer id, final String specname, final String notification_uri, final String extern_ref,
+            final int lease
+    ) {
         this.id = id;
         this.specname = specname;
-        this.notification_uri = notification_uri;
-        this.extern_ref = extern_ref;
+        this.notificationUri = notification_uri;
+        this.externRef = extern_ref;
         this.lease = lease;
     }
 
@@ -27,11 +32,11 @@ public class Subscription {
     }
 
     public String getNotificationUri() {
-        return notification_uri;
+        return notificationUri;
     }
 
     public String getExternRef() {
-        return extern_ref;
+        return externRef;
     }
 
     public int getLease() {
@@ -40,22 +45,9 @@ public class Subscription {
     
     @Override
     public String toString() {
-        StringBuilder result = new StringBuilder();
-        result.append("id = ");
-        result.append(this.id);
-        result.append("\n");
-        result.append("specname = ");
-        result.append(this.specname);
-        result.append("\n");
-        result.append("notification uri = ");
-        result.append(this.notification_uri);
-        result.append("\n");
-        result.append("external reference = ");
-        result.append(this.extern_ref);
-        result.append("\n");
-        result.append("lease time = ");
-        result.append(this.lease);
-        result.append(" minutes\n");
-        return result.toString();
+        return String.format(
+                "id = %d%nspecname = %s%nnotification uri = %s%nexternal reference = %s%nlease time = %s%n minutes%n",
+                this.id, this.specname, this.notificationUri, this.externRef, this.lease
+        );
     }
 }

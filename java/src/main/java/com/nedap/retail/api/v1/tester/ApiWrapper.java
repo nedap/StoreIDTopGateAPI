@@ -3,9 +3,12 @@ package com.nedap.retail.api.v1.tester;
 import com.google.gson.Gson;
 import com.nedap.retail.api.v1.model.*;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
         
 /**
@@ -16,9 +19,9 @@ public class ApiWrapper {
     
     /**
      * Constructor
-     * @param url base URL for all API calls
+     * @param baseUrl base URL for all API calls
      */
-    public ApiWrapper(String baseUrl) {
+    public ApiWrapper(final String baseUrl) {
         // make sure baseUrl does not end with a slash
         if (baseUrl.endsWith("/")) {
             this.baseUrl = baseUrl.substring(0, baseUrl.length()-1);
@@ -27,114 +30,91 @@ public class ApiWrapper {
         }
     }
     
-    public Status getStatus() throws Exception {
-        String httpResult = doHttpRequest("/status");
-        Gson gson = new Gson();
-        return (Status)gson.fromJson(httpResult, Status.class);
+    public Status getStatus() throws IOException {
+        return new Gson().fromJson(doHttpRequest("/status"), Status.class);
     }
 
-    public SpecList getSpecs() throws Exception {
-        String httpResult = doHttpRequest("/service/events/specs");
-        Gson gson = new Gson();
-        return (SpecList)gson.fromJson(httpResult, SpecList.class);
+    public SpecList getSpecs() throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/specs"), SpecList.class);
     }
     
-    public Spec createSpec(Spec spec) throws Exception {
-        String httpResult = doHttpRequest("/service/events/specs", "POST", spec);
-        Gson gson = new Gson();
-        return (Spec)gson.fromJson(httpResult, Spec.class);
+    public Spec createSpec(final Spec spec) throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/specs", "POST", spec), Spec.class);
     }
 
-    public Spec getSpec(Integer id) throws Exception {
-        String httpResult = doHttpRequest("/service/events/specs/" + id);
-        Gson gson = new Gson();
-        return (Spec)gson.fromJson(httpResult, Spec.class);
+    public Spec getSpec(final Integer id) throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/specs/" + id), Spec.class);
     }
 
-    public void deleteSpec(Integer id) throws Exception {
+    public void deleteSpec(final Integer id) throws IOException {
         doHttpRequest("/service/events/specs/" + id, "DELETE");
     }
 
-    public Spec updateSpec(Spec spec) throws Exception {
-        String httpResult = doHttpRequest("/service/events/specs/" + spec.getId(), "PUT", spec);
-        Gson gson = new Gson();
-        return (Spec)gson.fromJson(httpResult, Spec.class);
+    public Spec updateSpec(final Spec spec) throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/specs/" + spec.getId(), "PUT", spec), Spec.class);
     }
 
-    public SubscriptionList getSubscriptions() throws Exception {
-        String httpResult = doHttpRequest("/service/events/subscriptions");
-        Gson gson = new Gson();
-        return (SubscriptionList)gson.fromJson(httpResult, SubscriptionList.class);
+    public SubscriptionList getSubscriptions() throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/subscriptions"), SubscriptionList.class);
     }
     
-    public Subscription createSubscription(Subscription subscription) throws Exception {
-        String httpResult = doHttpRequest("/service/events/subscriptions", "POST", subscription);
-        Gson gson = new Gson();
-        return (Subscription)gson.fromJson(httpResult, Subscription.class);
+    public Subscription createSubscription(final Subscription subscription) throws IOException {
+        return new Gson().fromJson(
+                doHttpRequest("/service/events/subscriptions", "POST", subscription), Subscription.class
+        );
     }
 
-    public Subscription getSubscription(Integer id) throws Exception {
-        String httpResult = doHttpRequest("/service/events/subscriptions/" + id);
-        Gson gson = new Gson();
-        return (Subscription)gson.fromJson(httpResult, Subscription.class);
+    public Subscription getSubscription(final Integer id) throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/events/subscriptions/" + id), Subscription.class);
     }
 
-    public void deleteSubscription(Integer id) throws Exception {
+    public void deleteSubscription(final Integer id) throws IOException {
         doHttpRequest("/service/events/subscriptions/" + id, "DELETE");
     }
 
-    public Subscription updateSubscription(Subscription subscription) throws Exception {
-        String httpResult = doHttpRequest("/service/events/subscriptions/" + subscription.getId(), "PUT", subscription);
-        Gson gson = new Gson();
-        return (Subscription)gson.fromJson(httpResult, Subscription.class);
+    public Subscription updateSubscription(final Subscription subscription) throws IOException {
+        return new Gson().fromJson(
+                doHttpRequest(
+                        "/service/events/subscriptions/" + subscription.getId(), "PUT", subscription
+                ), Subscription.class
+        );
     }
 
-    public void sendActions(Actions actions) throws Exception {
+    public void sendActions(final Actions actions) throws IOException {
         doHttpRequest("/service/actions", "POST", actions);
     }
 
-    public Settings getSettings() throws Exception {
-        String httpResult = doHttpRequest("/service/settings");
-        Gson gson = new Gson();
-        return (Settings)gson.fromJson(httpResult, Settings.class);
+    public Settings getSettings() throws IOException {
+        return new Gson().fromJson(doHttpRequest("/service/settings"), Settings.class);
     }
     
-    public void updateSettings(Settings settings) throws Exception {
+    public void updateSettings(final Settings settings) throws IOException {
         doHttpRequest("/service/settings", "PUT", settings);
     }
 
-    public void heartbeat() throws Exception {
+    public void heartbeat() throws IOException {
         doHttpRequest("/heartbeat", "GET");
     }
 
-    public void testConnection() {
-        try {
-            String httpResult = doHttpRequest("/status");
-            if (httpResult.length()>4) {
-                System.out.println("Connection OK");
-            } else {
-                System.out.println("Invalid response received");
-            }
-        } catch (java.lang.Exception e) {
-            e.printStackTrace();
+    public void testConnection() throws IOException {
+        if (doHttpRequest("/status").length() > 4) {
+            System.out.println("Connection OK");
+        } else {
+            System.out.println("Invalid response received");
         }
     }
 
-    private String doHttpRequest(String url, String requestMethod, Object data) throws Exception {
-        Gson gson = new Gson();
-        URL device = new URL(this.baseUrl + url);
-        HttpURLConnection connection = (HttpURLConnection) device.openConnection();
+    private String doHttpRequest(final String url, final String requestMethod, final Object data) throws IOException {
+        final HttpURLConnection connection = (HttpURLConnection) new URL(this.baseUrl + url).openConnection();
         connection.setConnectTimeout(10000);
         connection.setReadTimeout(10000);
-        if (requestMethod.equals("GET")) {
-            // is the default, do nothing
-        } else if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
+        if (requestMethod.equals("POST") || requestMethod.equals("PUT")) {
             connection.setDoOutput(true);
             connection.addRequestProperty("Content-Type", "application/json");
             connection.setRequestMethod(requestMethod);
-            OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream());
-            out.write(gson.toJson(data));
-            out.close();
+            try (final OutputStreamWriter out = new OutputStreamWriter(connection.getOutputStream())) {
+                out.write(new Gson().toJson(data));
+            }
         } else if (requestMethod.equals("DELETE")) {
             connection.setDoOutput(true);
             connection.addRequestProperty("Content-Type", "application/json");
@@ -142,21 +122,21 @@ public class ApiWrapper {
             connection.connect();
         }
         System.out.println("Response code = " + connection.getResponseCode());
-        BufferedReader inputBuffer = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder result = new StringBuilder();
-        String line;
-        while((line = inputBuffer.readLine()) != null ) {
-            result.append(line);
+        try (final BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+            final StringBuilder result = new StringBuilder();
+            String line;
+            while ((line = in.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
         }
-        inputBuffer.close();
-        return result.toString();
     }
     
-    private String doHttpRequest(String url, String requestMethod) throws Exception {
+    private String doHttpRequest(final String url, final String requestMethod) throws IOException {
         return doHttpRequest(url, requestMethod, null);
     }
 
-    private String doHttpRequest(String url) throws Exception {
+    private String doHttpRequest(final String url) throws IOException {
         return doHttpRequest(url, "GET", null);
     }
 }
